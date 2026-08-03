@@ -1,0 +1,25 @@
+# Core
+pyspark
+delta-spark
+
+# Data Generation
+faker
+pandas
+numpy
+
+# Database
+psycopg2-binary
+sqlalchemy
+
+# Environment
+python-dotenv
+
+# Object Storage
+minio
+
+# Data Quality
+great-expectations
+
+# Utilities
+pyyaml
+requests
