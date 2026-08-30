@@ -66,6 +66,7 @@ Data Quality and Governance:
 
 This project includes a practical governance foundation through Great Expectations validations, Airflow quality-gate workflows, quarantine handling, layered Bronze-Silver-Gold design, and metadata/lineage visibility through dbt docs.
 
+
 Running the Project:
 docker compose up -d
 
@@ -86,3 +87,26 @@ Future Improvements
 - Monitoring and alerting dashboards
 - Data contracts for producers and consumers
 - CI/CD automation for deployment and testing
+
+
+## Architecture
+![SentinelPay Architecture](architecture/sentinelpay-architecture.png)
+
+## Execution Proof
+
+### Airflow Orchestration
+![Quality Gate Success](screenshots/airflow/03-quality-gate-success.png)
+![Gold Pipeline Success](screenshots/airflow/04-gold-pipeline-success.png)
+
+### Spark Streaming
+![Streaming Query](screenshots/spark/02-streaming-query.png)
+![Spark Stages](screenshots/spark/03-stages.png)
+
+### dbt Lineage
+![dbt Lineage](screenshots/dbt/01-lineage-graph.png)
+
+### MinIO Lakehouse Storage
+![Lakehouse Root](screenshots/minio/01-lakehouse-root.png)
+![Silver Layer](screenshots/minio/02-silver-layer.png)
+![Gold Layer](screenshots/minio/03-gold-layer.png)
+![Checkpoint Folder](screenshots/minio/04-checkpoint-folder.png)
