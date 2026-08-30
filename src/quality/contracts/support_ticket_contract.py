@@ -1,0 +1,41 @@
+from src.utils.paths import QUALITY_RESULTS_BASE_PATH,QUARANTINE_BASE_PATH
+
+SUPPORT_TICKET_CONTRACT={
+    "dataset_name":"log_support_ticket",
+    "silver_path":"s3a://sentinelpay-lake/silver/log_support_ticket",
+    "quarantine_path":f"{QUARANTINE_BASE_PATH}/log_support_ticket",
+    "result_path":f"{QUALITY_RESULTS_BASE_PATH}/log_support_ticket",
+    "business_key":"ticket_id",
+    "required_columns":[
+        "ticket_id",
+        "event_id",
+        "source_system",
+        "ticket_type",
+        "reference_id",
+        "issue",
+        "priority",
+        "status",
+        "created_at",
+        "ingested_at",
+        "kafka_timestamp",
+        "bronze_ingested_at",
+        "silver_processed_at",
+    ],
+    "allowed_ticket_types":[
+        "TRANSACTION",
+        "REFUND",
+        "WALLET",
+    ],
+    "allowed_priorities":[
+        "LOW",
+        "MEDIUM",
+        "HIGH",
+        "CRITICAL",
+    ],
+    "allowed_statuses":[
+        "OPEN",
+        "IN_PROGRESS",
+        "RESOLVED",
+        "CLOSED"
+    ]
+}

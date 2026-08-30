@@ -1,0 +1,41 @@
+version: 2
+
+sources:
+  - name: silver
+    schema: global_temp
+    description: "Curated Silver layer exposed to dbt through Spark global temp views."
+    config:
+      meta:
+        owner: "data-engineering"
+        domain: "payments"
+        classification: "internal"
+        layer: "silver"
+      tags: ["silver", "curated", "governed"]
+
+    tables:
+      - name: silver_event_payment
+        description: "Validated and deduplicated payment events from the Spark Silver layer."
+        config:
+          meta:
+            owner: "data-engineering"
+            classification: "financial"
+            contains_pii: false
+          tags: ["payments", "silver", "financial"]
+
+      - name: silver_event_refund
+        description: "Validated refund events from the Spark Silver layer."
+        config:
+          meta:
+            owner: "data-engineering"
+            classification: "financial"
+            contains_pii: false
+          tags: ["refunds", "silver", "financial"]
+
+      - name: silver_log_support_ticket
+        description: "Curated support ticket records from the Spark Silver layer."
+        config:
+          meta:
+            owner: "data-engineering"
+            classification: "internal"
+            contains_pii: false
+          tags: ["support", "silver", "internal"]

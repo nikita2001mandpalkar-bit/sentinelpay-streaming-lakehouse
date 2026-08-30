@@ -1,0 +1,25 @@
+name: "sentinelpay_dbt"
+version: "1.0.0"
+config-version: 2
+
+profile: "sentinelpay_dbt"
+
+model-paths: ["models"]
+seed-paths: ["seeds"]
+snapshot-paths: ["snapshots"]
+test-paths: ["tests"]
+macro-paths: ["macros"]
+
+on-run-start:
+  - "create or replace global temp view silver_event_payment as select * from delta.`s3a://sentinelpay-lake/silver/event_payment`"
+  - "create or replace global temp view silver_event_refund as select * from delta.`s3a://sentinelpay-lake/silver/event_refund`"
+  - "create or replace global temp view silver_log_support_ticket as select * from delta.`s3a://sentinelpay-lake/silver/log_support_ticket`"
+
+models:
+  sentinelpay_dbt:
+    staging:
+      +materialized: table
+      +file_format: delta
+    marts:
+      +materialized: table
+      +file_format: delta

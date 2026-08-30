@@ -1,0 +1,99 @@
+version: 2
+
+models:
+  - name: fact_transactions
+    description: "Core transaction fact table used for payment analytics and downstream marts."
+    meta:
+      owner: "data-engineering"
+      domain: "payments"
+      classification: "financial"
+      layer: "gold"
+      retention: "365_days"
+    tags: ["gold", "fact", "payments", "governed"]
+    columns:
+      - name: transaction_id
+        description: "Primary transaction key."
+        tests:
+          - not_null
+          - unique
+      - name: merchant_id
+        description: "Merchant identifier tied to the transaction."
+      - name: wallet_id
+        description: "Wallet identifier tied to the transaction."
+      - name: transaction_status
+        description: "Normalized transaction status."
+        tests:
+          - accepted_values:
+              values: ["SUCCESS", "FAILED", "PENDING"]
+
+  - name: fact_refunds
+    description: "Refund fact table used for refund behavior and volume analytics."
+    meta:
+      owner: "data-engineering"
+      domain: "refunds"
+      classification: "financial"
+      layer: "gold"
+      retention: "365_days"
+    tags: ["gold", "fact", "refunds", "governed"]
+    columns:
+      - name: refund_id
+        description: "Primary refund key."
+        tests:
+          - not_null
+          - unique
+      - name: refund_status
+        description: "Refund lifecycle status."
+      - name: refund_amount
+        description: "Normalized refund amount."
+
+  - name: mart_payment_summary
+    description: "Aggregated payment summary by merchant, currency, payment method, and status."
+    meta:
+      owner: "analytics-engineering"
+      domain: "payments"
+      classification: "internal"
+      layer: "gold"
+    tags: ["gold", "mart", "payments", "analytics"]
+    columns:
+      - name: merchant_id
+        description: "Merchant dimension key."
+        tests:
+          - not_null
+      - name: total_transactions
+        description: "Number of transactions in the aggregation grain."
+      - name: total_amount
+        description: "Total transaction amount in the aggregation grain."
+
+  - name: mart_refund_summary
+    description: "Aggregated refund summary by refund status and reason."
+    meta:
+      owner: "analytics-engineering"
+      domain: "refunds"
+      classification: "internal"
+      layer: "gold"
+    tags: ["gold", "mart", "refunds", "analytics"]
+    columns:
+      - name: refund_status
+        description: "Refund status used as aggregation grain."
+        tests:
+          - not_null
+      - name: total_refunds
+        description: "Number of refunds in the aggregation grain."
+      - name: total_refund_amount
+        description: "Total refund amount in the aggregation grain."
+
+  - name: mart_support_ticket_summary
+    description: "Aggregated support ticket summary by ticket type, issue, priority, and status."
+    meta:
+      owner: "analytics-engineering"
+      domain: "support"
+      classification: "internal"
+      layer: "gold"
+    tags: ["gold", "mart", "support", "analytics"]
+    columns:
+      - name: status
+        description: "Support ticket status used as aggregation grain."
+        tests:
+          - not_null
+      - name: total_tickets
+        description: "Number of tickets in the aggregation grain."

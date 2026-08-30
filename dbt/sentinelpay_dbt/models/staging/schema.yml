@@ -1,0 +1,61 @@
+version: 2
+
+models:
+  - name: stg_event_payment
+    description: "Standardized payment staging model with trimmed identifiers, normalized status fields, and typed amounts."
+    meta:
+      owner: "data-engineering"
+      domain: "payments"
+      classification: "financial"
+      layer: "staging"
+    tags: ["staging", "payments", "governed"]
+    columns:
+      - name: transaction_id
+        description: "Unique transaction identifier from the payment event stream."
+        tests:
+          - not_null
+          - unique
+      - name: transaction_status
+        description: "Normalized transaction lifecycle status."
+        tests:
+          - accepted_values:
+              values: ["SUCCESS", "FAILED", "PENDING"]
+      - name: amount
+        description: "Transaction amount normalized to decimal(18,2)."
+
+  - name: stg_event_refund
+    description: "Standardized refund staging model for downstream refund analytics."
+    meta:
+      owner: "data-engineering"
+      domain: "refunds"
+      classification: "financial"
+      layer: "staging"
+    tags: ["staging", "refunds", "governed"]
+    columns:
+      - name: refund_id
+        description: "Unique refund identifier from the refund event stream."
+        tests:
+          - not_null
+          - unique
+      - name: refund_status
+        description: "Normalized refund status."
+      - name: refund_amount
+        description: "Refund amount normalized to decimal(18,2)."
+
+  - name: stg_support_ticket
+    description: "Standardized support ticket staging model for operational analytics."
+    meta:
+      owner: "data-engineering"
+      domain: "support"
+      classification: "internal"
+      layer: "staging"
+    tags: ["staging", "support", "governed"]
+    columns:
+      - name: ticket_id
+        description: "Unique support ticket identifier."
+        tests:
+          - not_null
+      - name: status
+        description: "Current support ticket status."
+      - name: priority
+        description: "Support ticket priority category."

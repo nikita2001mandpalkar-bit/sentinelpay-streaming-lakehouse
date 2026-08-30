@@ -1,0 +1,21 @@
+sentinelpay_dbt:
+  target: dev
+  outputs:
+    dev:
+      type: spark
+      method: session
+      schema: default
+      host: NA
+      server_side_parameters:
+        "spark.driver.memory": "2g"
+        "spark.sql.extensions": "io.delta.sql.DeltaSparkSessionExtension"
+        "spark.sql.catalog.spark_catalog": "org.apache.spark.sql.delta.catalog.DeltaCatalog"
+        "spark.sql.catalogImplementation": "in-memory"
+        "spark.sql.warehouse.dir": "/opt/sentinelpay/dbt/sentinelpay_dbt/spark-warehouse"
+        "spark.hadoop.fs.s3a.endpoint": "http://minio:9000"
+        "spark.hadoop.fs.s3a.access.key": "minioadmin"
+        "spark.hadoop.fs.s3a.secret.key": "minioadmin123"
+        "spark.hadoop.fs.s3a.path.style.access": "true"
+        "spark.hadoop.fs.s3a.impl": "org.apache.hadoop.fs.s3a.S3AFileSystem"
+        "spark.hadoop.fs.s3a.connection.ssl.enabled": "false"
+        "spark.jars.packages": "io.delta:delta-spark_2.12:3.2.0,org.apache.hadoop:hadoop-aws:3.3.4,com.amazonaws:aws-java-sdk-bundle:1.12.262"

@@ -1,0 +1,32 @@
+from src.utils.paths import QUALITY_RESULTS_BASE_PATH,QUARANTINE_BASE_PATH
+
+EVENT_REFUND_CONTRACT={
+    "dataset_name":"event_refund",
+    "silver_path":"s3a://sentinelpay-lake/silver/event_refund",
+    "quarantine_path":f"{QUARANTINE_BASE_PATH}/event_refund",
+    "result_path":f"{QUALITY_RESULTS_BASE_PATH}/event_refund",
+    "business_key":"refund_id",
+    "required_columns":[
+        "refund_id",
+        "transaction_id",
+        "refund_amount",
+        "refund_reason",
+        "refund_status",
+        "created_at",
+        "event_timestamp",
+        "kafka_timestamp",
+        "bronze_ingested_at",
+        "silver_processed_at",
+    ],
+    "allowed_statuses":[
+        "REQUESTED",
+        "APPROVED",
+        "COMPLETED",
+        "FAILED",
+        "REJECTED"
+    ],
+    "amount_range":{
+        "min_value":0.01,
+        "max_value":1000000.00,
+    }
+}

@@ -1,62 +1,351 @@
 version: '3.9'
 
 services:
-
   postgres:
     image: postgres:16
     container_name: sentinel-postgres
-
     restart: unless-stopped
-
     env_file:
       - .env
-
     environment:
       POSTGRES_USER: ${POSTGRES_USER}
       POSTGRES_PASSWORD: ${POSTGRES_PASSWORD}
       POSTGRES_DB: ${POSTGRES_DB}
-
     ports:
       - "${POSTGRES_PORT}:5432"
-
     volumes:
       - postgres_data:/var/lib/postgresql/data
-
     networks:
       - sentinel-network
 
   minio:
     image: minio/minio
     container_name: sentinel-minio
-
     restart: unless-stopped
-
     env_file:
       - .env
-
     environment:
       MINIO_ROOT_USER: ${MINIO_ROOT_USER}
       MINIO_ROOT_PASSWORD: ${MINIO_ROOT_PASSWORD}
-
     command: server /data --console-address ":9001"
-
     ports:
       - "${MINIO_API_PORT}:9000"
       - "${MINIO_CONSOLE_PORT}:9001"
-
     volumes:
       - minio_data:/data
-
     networks:
       - sentinel-network
 
+  zookeeper:
+    image: confluentinc/cp-zookeeper:7.6.1
+    container_name: sentinel-zookeeper
+    restart: unless-stopped
+    environment:
+      ZOOKEEPER_CLIENT_PORT: 2181
+      ZOOKEEPER_TICK_TIME: 2000
+    ports:
+      - "2181:2181"
+    networks:
+      - sentinel-network
+
+  kafka:
+    image: confluentinc/cp-kafka:7.6.1
+    container_name: sentinel-kafka
+    restart: unless-stopped
+    depends_on:
+      - zookeeper
+    environment:
+      KAFKA_BROKER_ID: 1
+      KAFKA_ZOOKEEPER_CONNECT: sentinel-zookeeper:2181
+      KAFKA_LISTENER_SECURITY_PROTOCOL_MAP: PLAINTEXT:PLAINTEXT,PLAINTEXT_HOST:PLAINTEXT
+      KAFKA_LISTENERS: PLAINTEXT://0.0.0.0:29092,PLAINTEXT_HOST://0.0.0.0:9092
+      KAFKA_ADVERTISED_LISTENERS: PLAINTEXT://kafka:29092,PLAINTEXT_HOST://localhost:9092
+      KAFKA_INTER_BROKER_LISTENER_NAME: PLAINTEXT
+      KAFKA_OFFSETS_TOPIC_REPLICATION_FACTOR: 1
+      KAFKA_TRANSACTION_STATE_LOG_MIN_ISR: 1
+      KAFKA_TRANSACTION_STATE_LOG_REPLICATION_FACTOR: 1
+      KAFKA_AUTO_CREATE_TOPICS_ENABLE: "true"
+    ports:
+      - "9092:9092"
+    networks:
+      - sentinel-network
+
+  airflow-postgres:
+    image: postgres:16
+    container_name: sentinel-airflow-postgres
+    restart: unless-stopped
+    environment:
+      POSTGRES_USER: airflow
+      POSTGRES_PASSWORD: airflow
+      POSTGRES_DB: airflow
+    ports:
+      - "5433:5432"
+    volumes:
+      - airflow_postgres_data:/var/lib/postgresql/data
+    networks:
+      - sentinel-network
+
+  airflow-init:
+    build:
+      context: ./airflow
+      dockerfile: Dockerfile
+    container_name: sentinel-airflow-init
+    depends_on:
+      - airflow-postgres
+    env_file:
+      - .env
+    environment:
+      PYTHONPATH: /opt/sentinelpay
+      JAVA_HOME: /usr/lib/jvm/java-17-openjdk-arm64
+    volumes:
+      - ./airflow/dags:/opt/airflow/dags
+      - ./airflow/logs:/opt/airflow/logs
+      - ./airflow/plugins:/opt/airflow/plugins
+      - ./airflow/config:/opt/airflow/config
+      - ./airflow/.ivy2:/opt/airflow/.ivy2
+      - .:/opt/sentinelpay
+    command: db migrate
+    networks:
+      - sentinel-network
+
+  airflow-api-server:
+    build:
+      context: ./airflow
+      dockerfile: Dockerfile
+    container_name: sentinel-airflow-api-server
+    restart: unless-stopped
+    depends_on:
+      - airflow-postgres
+      - airflow-init
+    env_file:
+      - .env
+    environment:
+       PYTHONPATH: /opt/sentinelpay
+       JAVA_HOME: /usr/lib/jvm/java-17-openjdk-arm64
+       OPENAI_API_KEY: ${OPENAI_API_KEY}
+    volumes:
+      - ./airflow/dags:/opt/airflow/dags
+      - ./airflow/logs:/opt/airflow/logs
+      - ./airflow/plugins:/opt/airflow/plugins
+      - ./airflow/config:/opt/airflow/config
+      - ./airflow/.ivy2:/opt/airflow/.ivy2
+      - .:/opt/sentinelpay
+    command: api-server
+    ports: 
+      - "8080:8080"
+    networks:
+      - sentinel-network
+
+  airflow-scheduler:
+    build:
+      context: ./airflow
+      dockerfile: Dockerfile
+    container_name: sentinel-airflow-scheduler
+    restart: unless-stopped
+    depends_on:
+      - airflow-postgres
+      - airflow-init
+    env_file:
+      - .env
+    environment:
+      PYTHONPATH: /opt/sentinelpay
+      JAVA_HOME: /usr/lib/jvm/java-17-openjdk-arm64
+      OPENAI_API_KEY: ${OPENAI_API_KEY}
+    volumes:
+      - ./airflow/dags:/opt/airflow/dags
+      - ./airflow/logs:/opt/airflow/logs
+      - ./airflow/plugins:/opt/airflow/plugins
+      - ./airflow/config:/opt/airflow/config
+      - ./airflow/.ivy2:/opt/airflow/.ivy2
+      - .:/opt/sentinelpay
+    command: scheduler
+    ports:
+      - "4040:4040"
+      - "4041:4041"
+      - "4042:4042"
+      - "4043:4043"
+    networks:
+      - sentinel-network
+      
+
+  airflow-dag-processor:
+    build:
+      context: ./airflow
+      dockerfile: Dockerfile
+    container_name: sentinel-airflow-dag-processor
+    restart: unless-stopped
+    depends_on:
+      - airflow-postgres
+      - airflow-init
+    env_file:
+      - .env
+    environment:
+      PYTHONPATH: /opt/sentinelpay
+      JAVA_HOME: /usr/lib/jvm/java-17-openjdk-arm64
+      OPENAI_API_KEY: ${OPENAI_API_KEY}
+    volumes:
+      - ./airflow/dags:/opt/airflow/dags
+      - ./airflow/logs:/opt/airflow/logs
+      - ./airflow/plugins:/opt/airflow/plugins
+      - ./airflow/config:/opt/airflow/config
+      - ./airflow/.ivy2:/opt/airflow/.ivy2
+      - .:/opt/sentinelpay
+    command: dag-processor
+    networks:
+      - sentinel-network
+
+  live-payment-producer:
+    build:
+      context: ./airflow
+      dockerfile: Dockerfile
+    container_name: sentinel-live-payment-producer
+    restart: unless-stopped
+    depends_on:
+      - kafka
+    env_file:
+      - .env
+    environment:
+      PYTHONPATH: /opt/sentinelpay
+      KAFKA_BOOTSTRAP_SERVERS: kafka:29092
+    volumes:
+      - .:/opt/sentinelpay
+    command: python -m src.ingestion.live_payment_producer
+    networks:
+      - sentinel-network
+
+  live-refund-producer:
+    build:
+      context: ./airflow
+      dockerfile: Dockerfile
+    container_name: sentinel-live-refund-producer
+    restart: unless-stopped
+    depends_on:
+      - kafka
+    env_file:
+      - .env
+    environment:
+      PYTHONPATH: /opt/sentinelpay
+      KAFKA_BOOTSTRAP_SERVERS: kafka:29092
+    volumes:
+      - .:/opt/sentinelpay
+    command: python -m src.ingestion.live_refund_producer
+    networks:
+      - sentinel-network
+
+  live-log-producer:
+    build:
+      context: ./airflow
+      dockerfile: Dockerfile
+    container_name: sentinel-live-log-producer
+    restart: unless-stopped
+    depends_on:
+      - kafka
+    env_file:
+      - .env
+    environment:
+      PYTHONPATH: /opt/sentinelpay
+      KAFKA_BOOTSTRAP_SERVERS: kafka:29092
+    volumes:
+      - .:/opt/sentinelpay
+    command: python -m src.ingestion.live_log_producer
+    networks:
+      - sentinel-network
+
+  live-support-ticket-producer:
+    build:
+      context: ./airflow
+      dockerfile: Dockerfile
+    container_name: sentinel-live-support-ticket-producer
+    restart: unless-stopped
+    depends_on:
+      - kafka
+    env_file:
+      - .env
+    environment:
+      PYTHONPATH: /opt/sentinelpay
+      KAFKA_BOOTSTRAP_SERVERS: kafka:29092
+    volumes:
+      - .:/opt/sentinelpay
+    command: python -m src.ingestion.live_support_ticket_producer
+    networks:
+      - sentinel-network
+
+  bronze-master-stream:
+    build:
+      context: ./airflow
+      dockerfile: Dockerfile
+    container_name: sentinel-bronze-master-stream
+    restart: unless-stopped
+    depends_on:
+      - kafka
+      - minio
+    env_file:
+      - .env
+    environment:
+      PYTHONPATH: /opt/sentinelpay
+      JAVA_HOME: /usr/lib/jvm/java-17-openjdk-arm64
+      KAFKA_BOOTSTRAP_SERVERS: kafka:29092
+    volumes:
+      - .:/opt/sentinelpay
+      - ./airflow/.ivy2:/opt/airflow/.ivy2
+    command: python -m src.streaming.bronze_master_data
+    networks:
+      - sentinel-network
+
+  bronze-event-stream:
+    build:
+      context: ./airflow
+      dockerfile: Dockerfile
+    container_name: sentinel-bronze-event-stream
+    restart: unless-stopped
+    depends_on:
+      - kafka
+      - minio
+    env_file:
+      - .env
+    environment:
+      PYTHONPATH: /opt/sentinelpay
+      JAVA_HOME: /usr/lib/jvm/java-17-openjdk-arm64
+      KAFKA_BOOTSTRAP_SERVERS: kafka:29092
+    volumes:
+      - .:/opt/sentinelpay
+      - ./airflow/.ivy2:/opt/airflow/.ivy2
+    command: python -m src.streaming.bronze_event_data
+    networks:
+      - sentinel-network
+
+  bronze-log-stream:
+    build:
+      context: ./airflow
+      dockerfile: Dockerfile
+    container_name: sentinel-bronze-log-stream
+    restart: unless-stopped
+    depends_on:
+      - kafka
+      - minio
+    env_file:
+      - .env
+    environment:
+      PYTHONPATH: /opt/sentinelpay
+      JAVA_HOME: /usr/lib/jvm/java-17-openjdk-arm64
+      KAFKA_BOOTSTRAP_SERVERS: kafka:29092
+    volumes:
+      - .:/opt/sentinelpay
+      - ./airflow/.ivy2:/opt/airflow/.ivy2
+    command: python -m src.streaming.bronze_log_data
+    networks:
+      - sentinel-network
+
+
+
 volumes:
-
   postgres_data:
-
   minio_data:
+  airflow_postgres_data:
 
 networks:
-
   sentinel-network:
     driver: bridge
+
+
+

@@ -1,0 +1,7 @@
+pyspark==3.5.1
+delta-spark==3.2.0
+great_expectations
+psycopg2-binary
+dbt-core==1.12.3
+dbt-spark[session]==1.11.0
+kafka-python

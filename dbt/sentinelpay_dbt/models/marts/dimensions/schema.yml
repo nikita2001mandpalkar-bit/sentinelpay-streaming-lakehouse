@@ -1,0 +1,62 @@
+version: 2
+
+models:
+  - name: dim_customer
+    description: "Customer dimension derived from transaction activity."
+    meta:
+      owner: "analytics-engineering"
+      domain: "customers"
+      classification: "internal"
+      layer: "gold"
+    tags: ["gold", "dimension", "customers"]
+    columns:
+      - name: customer_id
+        description: "Customer dimension key."
+        tests:
+          - not_null
+          - unique
+
+  - name: dim_merchant
+    description: "Merchant dimension derived from transaction activity."
+    meta:
+      owner: "analytics-engineering"
+      domain: "merchants"
+      classification: "internal"
+      layer: "gold"
+    tags: ["gold", "dimension", "merchants"]
+    columns:
+      - name: merchant_id
+        description: "Merchant dimension key."
+        tests:
+          - not_null
+          - unique
+
+  - name: dim_wallet
+    description: "Wallet dimension derived from transaction activity."
+    meta:
+      owner: "analytics-engineering"
+      domain: "wallets"
+      classification: "internal"
+      layer: "gold"
+    tags: ["gold", "dimension", "wallets"]
+    columns:
+      - name: wallet_id
+        description: "Wallet dimension key."
+        tests:
+          - not_null
+          - unique
+
+  - name: dim_date
+    description: "Calendar date dimension derived from transaction event dates."
+    meta:
+      owner: "analytics-engineering"
+      domain: "time"
+      classification: "internal"
+      layer: "gold"
+    tags: ["gold", "dimension", "time"]
+    columns:
+      - name: date_day
+        description: "Calendar date key."
+        tests:
+          - not_null
+          - unique
