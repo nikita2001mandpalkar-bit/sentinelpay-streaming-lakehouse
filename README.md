@@ -136,6 +136,11 @@ The repository includes execution proof for orchestration, storage, streaming, s
 ![1M Record Proof](screenshots/scale/01-1m-record-proof.png)
 ![Docker Stats](screenshots/scale/02-docker-stats.png)
 
+### Gold Business Proof
+
+![Reconciliation Proof](screenshots/gold/01-reconciliation-proof.png)
+![Merchant SCD Proof](screenshots/gold/02-merchant-scd-proof.png)
+
 ## Notable Implementations
 
 ### Financial Reconciliation
@@ -147,6 +152,8 @@ The Gold reconciliation layer compares successful payments, completed refunds, a
 - `UNDER_SETTLED`
 - `OVER_SETTLED`
 
+The repository includes a proof screenshot showing a merchant reconciled to `MATCHED` after payment, refund, and settlement aggregation.
+
 ### Merchant SCD Type 2
 
 The project also implements merchant master-data history tracking in the Gold layer with:
@@ -156,3 +163,5 @@ The project also implements merchant master-data history tracking in the Gold la
 - `effective_to`
 - `is_current`
 - deterministic merchant version surrogate keys
+
+The proof screenshot shows the same merchant recorded in two versions, with the old row closed by `effective_to` and the latest row marked `is_current = true`.
