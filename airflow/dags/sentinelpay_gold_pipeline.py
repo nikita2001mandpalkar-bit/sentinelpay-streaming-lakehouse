@@ -66,6 +66,24 @@ with DAG(
         execution_timeout=timedelta(minutes=8),
     )
 
+    gold_reconciliation = PythonOperator(
+        task_id="gold_reconciliation",
+        python_callable=run_command,
+        op_kwargs={
+            "module_name": "src.transformations.gold.gold_reconciliation",
+        },
+        execution_timeout=timedelta(minutes=8),
+    )
+
+    gold_dim_merchant_scd = PythonOperator(
+        task_id="gold_dim_merchant_scd",
+        python_callable=run_command,
+        op_kwargs={
+            "module_name": "src.transformations.gold.gold_dim_merchant_scd",
+        },
+        execution_timeout=timedelta(minutes=8),
+    )
+
     gold_support_ticket = PythonOperator(
         task_id="gold_support_ticket",
         python_callable=run_command,
@@ -75,4 +93,10 @@ with DAG(
         execution_timeout=timedelta(minutes=8),
     )
 
-    gold_event_payment >> gold_event_refund >> gold_support_ticket
+    (
+        gold_event_payment
+        >> gold_event_refund
+        >> gold_reconciliation
+        >> gold_dim_merchant_scd
+        >> gold_support_ticket
+    )

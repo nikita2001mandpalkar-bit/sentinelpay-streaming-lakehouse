@@ -19,7 +19,8 @@ models:
         description: "Normalized transaction lifecycle status."
         tests:
           - accepted_values:
-              values: ["SUCCESS", "FAILED", "PENDING"]
+              arguments:
+                values: ["SUCCESS", "FAILED", "PENDING"]
       - name: amount
         description: "Transaction amount normalized to decimal(18,2)."
 

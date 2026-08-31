@@ -1,6 +1,7 @@
 """Database connection utilities for SentinelPay."""
 
 import os
+from pathlib import Path
 
 import psycopg2
 from dotenv import load_dotenv
@@ -8,7 +9,14 @@ from dotenv import load_dotenv
 load_dotenv()
 
 
-def validate_database_config():
+def _default_postgres_host() -> str:
+    """Use the Docker service name in containers and localhost on the host."""
+    if Path("/opt/airflow").exists():
+        return "postgres"
+    return "localhost"
+
+
+def validate_database_config() -> None:
     """
     Validate required database environment variables.
     """
@@ -21,9 +29,7 @@ def validate_database_config():
     }
 
     for key, value in required_configs.items():
-
         if value is None or value.strip() == "":
-
             raise ValueError(
                 f"Missing required environment variable: {key}"
             )
@@ -37,9 +43,8 @@ def get_connection():
     validate_database_config()
 
     try:
-
         connection = psycopg2.connect(
-            host="localhost",
+            host=os.getenv("POSTGRES_HOST", _default_postgres_host()),
             port=os.getenv("POSTGRES_PORT"),
             database=os.getenv("POSTGRES_DB"),
             user=os.getenv("POSTGRES_USER"),
@@ -49,11 +54,7 @@ def get_connection():
         return connection
 
     except psycopg2.OperationalError:
-
         raise
 
     except psycopg2.DatabaseError:
-
         raise
-
-    

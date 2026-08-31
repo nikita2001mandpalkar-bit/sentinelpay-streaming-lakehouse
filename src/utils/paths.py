@@ -56,6 +56,7 @@ CHECKPOINT_PATHS = {
 SILVER_PATHS = {
     "event.payment": f"{SILVER_BASE_PATH}/event_payment",
     "event.refund": f"{SILVER_BASE_PATH}/event_refund",
+    "batch.settlement": f"{SILVER_BASE_PATH}/settlements",
     "log.support_ticket": f"{SILVER_BASE_PATH}/log_support_ticket",
     "log.application": f"{SILVER_BASE_PATH}/log_application",
     "log.error": f"{SILVER_BASE_PATH}/log_error",
@@ -82,6 +83,6 @@ GOLD_PATHS = {
     "payment.summary": f"{GOLD_BASE_PATH}/payment_summary",
     "refund.summary": f"{GOLD_BASE_PATH}/refund_summary",
     "support_ticket.summary": f"{GOLD_BASE_PATH}/support_ticket_summary",
+    "finance.reconciliation": f"{GOLD_BASE_PATH}/finance_reconciliation",
+    "dimension.merchant_scd": f"{GOLD_BASE_PATH}/dim_merchant_scd",
 }
-
-

@@ -10,35 +10,22 @@ from src.utils.delta_writer import write_stream_to_delta
 from src.utils.kafka_reader import read_kafka_stream
 from src.utils.paths import BRONZE_PATHS, CHECKPOINT_PATHS
 from src.utils.schemas import (
-    MERCHANT_EVENT_SCHEMA,
     PAYMENT_EVENT_SCHEMA,
     REFUND_EVENT_SCHEMA,
     REFUND_SCHEMA,
-    SETTLEMENT_SCHEMA,
     SUPPORT_TICKET_SCHEMA,
     TRANSACTION_SCHEMA,
-    WALLET_EVENT_SCHEMA,
 )
 from src.utils.spark_session import create_spark_session
 
 logger = get_logger(__name__)
-
-# TOPIC_SCHEMA_MAP = {
-#     "event.payment": TRANSACTION_SCHEMA,
-#     "event.refund": REFUND_SCHEMA,
-#     "batch.settlement": SETTLEMENT_SCHEMA,
-#     "event.wallet": WALLET_EVENT_SCHEMA,
-#     "event.merchant": MERCHANT_EVENT_SCHEMA,
-#     "event.payment_json": PAYMENT_EVENT_SCHEMA,
-#     "event.refund_json": REFUND_EVENT_SCHEMA,
-#     "log.support_ticket": SUPPORT_TICKET_SCHEMA,
-# }
 
 TOPIC_SCHEMA_MAP = {
     "event.payment": TRANSACTION_SCHEMA,
     "event.refund": REFUND_SCHEMA,
     "log.support_ticket": SUPPORT_TICKET_SCHEMA,
 }
+
 
 def parse_topic_stream(
     topic_name: str,
@@ -52,7 +39,7 @@ def parse_topic_stream(
 
     parsed_stream_df = (
         raw_stream_df
-        .withColumn("raw_payload",col("message_value"))
+        .withColumn("raw_payload", col("message_value"))
         .withColumn(
             "parsed_value",
             from_json(col("message_value"), schema),

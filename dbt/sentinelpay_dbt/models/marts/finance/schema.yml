@@ -24,7 +24,8 @@ models:
         description: "Normalized transaction status."
         tests:
           - accepted_values:
-              values: ["SUCCESS", "FAILED", "PENDING"]
+              arguments:
+                values: ["SUCCESS", "FAILED", "PENDING"]
 
   - name: fact_refunds
     description: "Refund fact table used for refund behavior and volume analytics."

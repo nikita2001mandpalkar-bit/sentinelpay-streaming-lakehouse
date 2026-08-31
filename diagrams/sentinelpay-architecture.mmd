@@ -1,0 +1,68 @@
+flowchart LR
+    A1[PostgreSQL Extracts]
+    A2[JSON Payment Events]
+    A3[Application Logs]
+    A4[Support Tickets]
+
+    B[Apache Kafka]
+
+    C1[Bronze Layer<br/>PySpark Structured Streaming<br/>Raw Delta Tables on MinIO]
+    C2[Silver Layer<br/>Validation<br/>Deduplication<br/>Watermarking<br/>Late Event Handling]
+    C3[Gold Layer<br/>Curated Delta Tables on MinIO]
+
+    D1[Great Expectations<br/>Quality Validation]
+    D2[Quarantine Records]
+    D3[Checkpoint Recovery]
+
+    E1[dbt Staging Models]
+    E2[dbt Mart Models]
+    E3[dbt Docs and Lineage]
+
+    F[Analytics and Reporting]
+
+    G[Apache Airflow<br/>Streaming Control<br/>Quality Gate<br/>Gold Pipeline<br/>dbt Pipeline<br/>Main Pipeline]
+
+    A1 --> B
+    A2 --> B
+    A3 --> B
+    A4 --> B
+
+    B --> C1
+    C1 --> C2
+    C2 --> C3
+
+    C2 --> D1
+    D1 --> D2
+    C1 --> D3
+
+    C2 --> E1
+    E1 --> E2
+    E2 --> E3
+    E2 --> F
+
+    G -.-> C1
+    G -.-> D1
+    G -.-> C3
+    G -.-> E1
+
+    classDef source fill:#ffffff,stroke:#c8d7e8,stroke-width:1.5px,color:#17324d;
+    classDef ingest fill:#fff1b7,stroke:#d89a17,stroke-width:2px,color:#17324d;
+    classDef bronze fill:#ffe5d0,stroke:#c96e1a,stroke-width:2px,color:#17324d;
+    classDef silver fill:#eef3f8,stroke:#64748b,stroke-width:2px,color:#17324d;
+    classDef gold fill:#fff2bf,stroke:#ca8a04,stroke-width:2px,color:#17324d;
+    classDef quality fill:#e8fff0,stroke:#1f8c5d,stroke-width:2px,color:#17324d;
+    classDef risk fill:#fff0f0,stroke:#dc4a4a,stroke-width:2px,color:#17324d;
+    classDef dbt fill:#e8f1ff,stroke:#2f6fed,stroke-width:2px,color:#17324d;
+    classDef orchestration fill:#f2ebff,stroke:#8759e2,stroke-width:2px,color:#17324d;
+    classDef output fill:#e6fbff,stroke:#0f8b99,stroke-width:2px,color:#17324d;
+
+    class A1,A2,A3,A4 source;
+    class B ingest;
+    class C1 bronze;
+    class C2 silver;
+    class C3 gold;
+    class D1,D3 quality;
+    class D2 risk;
+    class E1,E2,E3 dbt;
+    class G orchestration;
+    class F output;

@@ -147,4 +147,10 @@ with DAG(
         },
     )
 
-    dbt_debug >> dbt_run_staging_core >> dbt_run_staging_support >> dbt_build_marts_core >> dbt_build_marts_summary
+    (
+        dbt_debug
+        >> dbt_run_staging_core
+        >> dbt_run_staging_support
+        >> dbt_build_marts_core
+        >> dbt_build_marts_summary
+    )

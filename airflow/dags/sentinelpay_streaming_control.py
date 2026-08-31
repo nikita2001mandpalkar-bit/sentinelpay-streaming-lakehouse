@@ -17,6 +17,10 @@ BRONZE_STREAM_JOBS = [
         "module_name": "src.streaming.bronze_event_data",
     },
     {
+        "task_id": "start_bronze_settlement_data",
+        "module_name": "src.streaming.bronze_settlement_data",
+    },
+    {
         "task_id": "start_bronze_log_data",
         "module_name": "src.streaming.bronze_log_data",
     },
