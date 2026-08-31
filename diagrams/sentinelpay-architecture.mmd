@@ -1,138 +1,53 @@
 flowchart LR
-    subgraph S["Source Systems"]
-        PG[PostgreSQL<br/>payments, refunds, settlements,<br/>merchants, devices, bank accounts]
-        EV[JSON Event Streams<br/>payment and refund events]
-        LG[Application Logs]
-        ST[Support Tickets]
+    SRC[Source Systems<br/>PostgreSQL, JSON events,<br/>application logs, support tickets]
+    KAFKA[Kafka Ingestion<br/>event.payment, event.refund,<br/>batch.settlement, support/log feeds]
+
+    subgraph PLATFORM["SentinelPay Data Platform"]
+        subgraph LAKE["Delta Lake on MinIO"]
+            BRONZE[Bronze<br/>raw append-only ingestion]
+            SILVER[Silver<br/>validated, deduplicated,<br/>watermarked datasets]
+            GOLD[Gold<br/>payment summary,<br/>reconciliation, merchant SCD2]
+        end
+
+        PROC[Data Processing<br/>PySpark Structured Streaming<br/>Airflow orchestration]
+        QUALITY[Quality and Recovery<br/>Great Expectations, quarantine,<br/>checkpoint recovery]
+        ANALYTICS[Analytics Modelling<br/>dbt staging, marts, docs, lineage]
     end
 
-    subgraph K["Kafka Ingestion Layer"]
-        KP[event.payment]
-        KR[event.refund]
-        KS[batch.settlement]
-        KL[log.support_ticket]
-        KM[master data feeds]
-    end
+    ACCESS[Access Layer<br/>SQL, docs, APIs, recruiter proof]
+    PROOF[Monitoring and Proof<br/>Spark UI, Airflow UI,<br/>MinIO browser, GitHub]
 
-    subgraph B["Bronze Delta Layer on MinIO"]
-        BP[bronze_event_payment]
-        BR[bronze_event_refund]
-        BS[bronze_settlement]
-        BL[bronze_logs]
-        BM[bronze_master_data]
-        BC[checkpoints]
-    end
+    SRC --> KAFKA
+    KAFKA --> BRONZE
+    BRONZE --> SILVER
+    SILVER --> GOLD
+    BRONZE --> PROC
+    SILVER --> QUALITY
+    SILVER --> ANALYTICS
+    GOLD --> ACCESS
+    ANALYTICS --> ACCESS
+    PROC --> PROOF
+    QUALITY --> PROOF
+    ACCESS --> PROOF
 
-    subgraph V["Silver Curated Layer"]
-        SP[silver_event_payment]
-        SR[silver_event_refund]
-        SS[silver_settlements]
-        STK[silver_support_ticket]
-        SD[silver_devices]
-        SBA[silver_bank_accounts]
-    end
+    classDef source fill:#ffffff,stroke:#8aa4c1,stroke-width:1.5px,color:#17324d;
+    classDef ingest fill:#fff3cc,stroke:#d29a00,stroke-width:2px,color:#3f2f00;
+    classDef bronze fill:#ffe7d8,stroke:#c96b22,stroke-width:2px,color:#4a250a;
+    classDef silver fill:#f1f4f8,stroke:#6c7b8f,stroke-width:2px,color:#233244;
+    classDef gold fill:#fff2b5,stroke:#c59600,stroke-width:2px,color:#4b3900;
+    classDef process fill:#eef5ff,stroke:#2f6fe6,stroke-width:2px,color:#173664;
+    classDef quality fill:#e9fbef,stroke:#18834d,stroke-width:2px,color:#123927;
+    classDef analytics fill:#f4ecff,stroke:#8a5ce6,stroke-width:2px,color:#3d2668;
+    classDef access fill:#edfaff,stroke:#1290a0,stroke-width:2px,color:#12393d;
+    classDef proof fill:#ffffff,stroke:#cfd9e6,stroke-width:1.5px,color:#17324d;
 
-    subgraph Q["Quality and Control"]
-        GX[Great Expectations<br/>quality gate]
-        QQ[quarantine tables]
-        FT[restart-safe checkpoint recovery]
-    end
-
-    subgraph G["Gold Business Layer"]
-        GPS[gold_payment_summary]
-        GRC[gold_finance_reconciliation]
-        GSCD[gold_dim_merchant_scd]
-    end
-
-    subgraph D["dbt Analytics Layer"]
-        DSG[staging models]
-        DMT[marts]
-        DDOC[docs and lineage]
-    end
-
-    AIR[Apache Airflow<br/>streaming control, quality gate,<br/>gold pipeline, dbt pipeline]
-    OUT[Analysts, dashboards,<br/>recruiter proof, and downstream consumers]
-
-    PG --> KP
-    PG --> KR
-    PG --> KS
-    PG --> KM
-    EV --> KP
-    EV --> KR
-    LG --> KL
-    ST --> KL
-
-    KP --> BP
-    KR --> BR
-    KS --> BS
-    KL --> BL
-    KM --> BM
-
-    BP --> SP
-    BR --> SR
-    BS --> SS
-    BL --> STK
-    BM --> SD
-    BM --> SBA
-
-    BP --> FT
-    BR --> FT
-    BS --> FT
-
-    SP --> GX
-    SR --> GX
-    SS --> GX
-    STK --> GX
-    SD --> GX
-    SBA --> GX
-    GX --> QQ
-
-    SP --> GPS
-    SR --> GPS
-    SS --> GRC
-    SP --> GRC
-    SR --> GRC
-    BM --> GSCD
-
-    SP --> DSG
-    SR --> DSG
-    SS --> DSG
-    STK --> DSG
-    DSG --> DMT
-    DMT --> DDOC
-
-    GPS --> OUT
-    GRC --> OUT
-    GSCD --> OUT
-    DMT --> OUT
-    DDOC --> OUT
-
-    AIR -. orchestrates .-> BP
-    AIR -. orchestrates .-> BR
-    AIR -. orchestrates .-> BS
-    AIR -. orchestrates .-> GX
-    AIR -. orchestrates .-> GRC
-    AIR -. orchestrates .-> GSCD
-    AIR -. orchestrates .-> DSG
-
-    classDef source fill:#f8fbff,stroke:#1f4b7a,stroke-width:1.5px,color:#0f2942;
-    classDef kafka fill:#fff3c8,stroke:#c98500,stroke-width:2px,color:#3f2f00;
-    classDef bronze fill:#ffe6d5,stroke:#c8641d,stroke-width:2px,color:#49240a;
-    classDef silver fill:#eef3f8,stroke:#6b7a8c,stroke-width:2px,color:#233244;
-    classDef quality fill:#e9fbef,stroke:#16824b,stroke-width:2px,color:#123927;
-    classDef quarantine fill:#fff1f1,stroke:#c93d3d,stroke-width:2px,color:#4e1515;
-    classDef gold fill:#fff3b0,stroke:#c79a00,stroke-width:2px,color:#4b3800;
-    classDef dbt fill:#e8f0ff,stroke:#2a67e8,stroke-width:2px,color:#183466;
-    classDef orchestration fill:#f5ecff,stroke:#8b5cf6,stroke-width:2px,color:#3e2468;
-    classDef output fill:#e7fbff,stroke:#0e8a96,stroke-width:2px,color:#11373b;
-
-    class PG,EV,LG,ST source;
-    class KP,KR,KS,KL,KM kafka;
-    class BP,BR,BS,BL,BM,BC bronze;
-    class SP,SR,SS,STK,SD,SBA silver;
-    class GX,FT quality;
-    class QQ quarantine;
-    class GPS,GRC,GSCD gold;
-    class DSG,DMT,DDOC dbt;
-    class AIR orchestration;
-    class OUT output;
+    class SRC source;
+    class KAFKA ingest;
+    class BRONZE bronze;
+    class SILVER silver;
+    class GOLD gold;
+    class PROC process;
+    class QUALITY quality;
+    class ANALYTICS analytics;
+    class ACCESS access;
+    class PROOF proof;
