@@ -1,0 +1,11 @@
+currency_id,currency_code,currency_name,country,currency_symbol
+1,INR,Indian Rupee,India,₹
+2,USD,US Dollar,United States,$
+3,EUR,Euro,European Union,€
+4,GBP,Pound Sterling,United Kingdom,£
+5,AED,UAE Dirham,United Arab Emirates,د.إ
+6,SGD,Singapore Dollar,Singapore,S$
+7,AUD,Australian Dollar,Australia,A$
+8,CAD,Canadian Dollar,Canada,C$
+9,JPY,Japanese Yen,Japan,¥
+10,SAR,Saudi Riyal,Saudi Arabia,﷼

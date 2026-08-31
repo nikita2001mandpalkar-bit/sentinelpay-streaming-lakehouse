@@ -1,0 +1,6 @@
+payment_method_id,payment_method,requires_bank_account,requires_wallet,supports_refund
+1,UPI,TRUE,FALSE,TRUE
+2,Credit Card,TRUE,FALSE,TRUE
+3,Debit Card,TRUE,FALSE,TRUE
+4,Wallet,FALSE,TRUE,TRUE
+5,Net Banking,TRUE,FALSE,TRUE

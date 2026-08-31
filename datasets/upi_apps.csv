@@ -1,0 +1,8 @@
+upi_app_id,upi_app,provider,is_active
+1,Google Pay,Google,TRUE
+2,PhonePe,PhonePe Pvt Ltd,TRUE
+3,Paytm,One97 Communications,TRUE
+4,BHIM,NPCI,TRUE
+5,Amazon Pay,Amazon,TRUE
+6,CRED,CRED,TRUE
+7,WhatsApp Pay,Meta,TRUE

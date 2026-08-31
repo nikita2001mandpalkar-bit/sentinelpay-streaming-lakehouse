@@ -1,0 +1,41 @@
+occupation_id,occupation,industry,min_annual_income,max_annual_income,average_monthly_transactions,average_transaction_amount,credit_risk
+1,Software Engineer,IT,500000,4000000,45,1800,LOW
+2,Senior Software Engineer,IT,1200000,6000000,60,2500,LOW
+3,Data Engineer,IT,700000,4500000,50,2200,LOW
+4,Data Scientist,IT,900000,5000000,48,2400,LOW
+5,Doctor,Healthcare,800000,10000000,40,3500,LOW
+6,Dentist,Healthcare,600000,6000000,38,3000,LOW
+7,Nurse,Healthcare,300000,1200000,35,1200,LOW
+8,Teacher,Education,300000,1500000,32,1000,LOW
+9,Professor,Education,700000,3000000,36,1800,LOW
+10,Lawyer,Legal,600000,8000000,42,2800,MEDIUM
+11,Chartered Accountant,Finance,700000,7000000,48,2600,LOW
+12,Banker,Banking,500000,4000000,55,2300,LOW
+13,Business Owner,Business,800000,20000000,75,6000,MEDIUM
+14,Shop Owner,Retail,300000,3000000,65,1800,MEDIUM
+15,Sales Executive,Sales,250000,1500000,55,1400,MEDIUM
+16,Marketing Manager,Marketing,600000,3500000,48,2200,LOW
+17,Government Employee,Government,400000,2500000,35,1500,LOW
+18,Police Officer,Government,400000,1800000,28,1300,LOW
+19,Civil Engineer,Construction,500000,3500000,38,2100,LOW
+20,Mechanical Engineer,Manufacturing,450000,3200000,40,2000,LOW
+21,Electrician,Services,250000,900000,45,900,MEDIUM
+22,Plumber,Services,250000,800000,42,850,MEDIUM
+23,Driver,Transport,180000,700000,60,750,MEDIUM
+24,Delivery Partner,Logistics,180000,600000,70,600,MEDIUM
+25,Farmer,Agriculture,150000,1500000,20,700,MEDIUM
+26,Student,Education,0,300000,80,350,HIGH
+27,Homemaker,Household,0,300000,18,500,LOW
+28,Retired,Retired,150000,1200000,22,900,LOW
+29,Freelancer,IT,200000,5000000,52,1700,MEDIUM
+30,Content Creator,Media,100000,8000000,58,2100,HIGH
+31,Actor,Entertainment,500000,50000000,30,7000,HIGH
+32,Musician,Entertainment,200000,15000000,28,3500,HIGH
+33,Influencer,Media,100000,30000000,65,2500,HIGH
+34,Architect,Construction,700000,6000000,35,2500,LOW
+35,Pharmacist,Healthcare,350000,1800000,32,1100,LOW
+36,HR Manager,Corporate,700000,3500000,40,1800,LOW
+37,Project Manager,Corporate,1200000,6000000,45,2600,LOW
+38,UX Designer,IT,600000,3500000,42,1900,LOW
+39,Graphic Designer,Media,250000,2000000,38,1200,MEDIUM
+40,Consultant,Consulting,1000000,10000000,55,3500,LOW

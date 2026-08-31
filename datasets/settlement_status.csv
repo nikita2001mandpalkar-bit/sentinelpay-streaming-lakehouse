@@ -1,0 +1,5 @@
+settlement_status_id,status,is_final
+1,PENDING,FALSE
+2,PROCESSING,FALSE
+3,COMPLETED,TRUE
+4,FAILED,TRUE

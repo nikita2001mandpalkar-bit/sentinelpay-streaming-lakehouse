@@ -1,0 +1,3 @@
+wallet_type_id,wallet_type,max_balance,monthly_limit,requires_full_kyc
+1,MIN_KYC,10000,100000,FALSE
+2,FULL_KYC,200000,1000000,TRUE

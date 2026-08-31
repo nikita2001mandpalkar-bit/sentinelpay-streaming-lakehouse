@@ -1,0 +1,31 @@
+failure_reason_id,failure_reason,category,retryable,error_code,severity
+1,Insufficient Balance,Customer,FALSE,ERR001,LOW
+2,Invalid UPI PIN,Customer,TRUE,ERR002,LOW
+3,Daily Transaction Limit Exceeded,Customer,TRUE,ERR003,MEDIUM
+4,Monthly Transaction Limit Exceeded,Customer,FALSE,ERR004,MEDIUM
+5,Bank Server Timeout,Bank,TRUE,ERR005,HIGH
+6,Beneficiary Bank Offline,Bank,TRUE,ERR006,HIGH
+7,Issuer Bank Declined,Bank,FALSE,ERR007,MEDIUM
+8,Network Timeout,Network,TRUE,ERR008,HIGH
+9,Network Congestion,Network,TRUE,ERR009,MEDIUM
+10,UPI Service Unavailable,UPI,TRUE,ERR010,HIGH
+11,NPCI Timeout,UPI,TRUE,ERR011,HIGH
+12,Merchant Payment Gateway Down,Merchant,TRUE,ERR012,HIGH
+13,Merchant Disabled,Merchant,FALSE,ERR013,HIGH
+14,Wallet Blocked,Wallet,FALSE,ERR014,HIGH
+15,Wallet Balance Low,Wallet,FALSE,ERR015,LOW
+16,KYC Pending,Compliance,FALSE,ERR016,MEDIUM
+17,KYC Rejected,Compliance,FALSE,ERR017,HIGH
+18,Suspicious Activity Detected,Fraud,FALSE,ERR018,CRITICAL
+19,Fraud Rule Triggered,Fraud,FALSE,ERR019,CRITICAL
+20,Blacklisted Device,Fraud,FALSE,ERR020,CRITICAL
+21,Blacklisted Customer,Fraud,FALSE,ERR021,CRITICAL
+22,Device Authentication Failed,Security,TRUE,ERR022,HIGH
+23,OTP Verification Failed,Security,TRUE,ERR023,MEDIUM
+24,Session Expired,Security,TRUE,ERR024,LOW
+25,Duplicate Transaction Detected,System,FALSE,ERR025,MEDIUM
+26,Invalid Request Payload,System,FALSE,ERR026,MEDIUM
+27,Internal Server Error,System,TRUE,ERR027,CRITICAL
+28,Database Connection Failure,System,TRUE,ERR028,CRITICAL
+29,Settlement Window Closed,Settlement,FALSE,ERR029,MEDIUM
+30,Unknown Error,System,TRUE,ERR999,CRITICAL

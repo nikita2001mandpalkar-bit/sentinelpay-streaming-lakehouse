@@ -1,0 +1,5 @@
+refund_status_id,status,is_final
+1,REQUESTED,FALSE
+2,APPROVED,FALSE
+3,REJECTED,TRUE
+4,COMPLETED,TRUE

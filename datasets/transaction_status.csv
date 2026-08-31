@@ -1,0 +1,4 @@
+transaction_status_id,status,is_success
+1,SUCCESS,TRUE
+2,FAILED,FALSE
+3,PENDING,FALSE

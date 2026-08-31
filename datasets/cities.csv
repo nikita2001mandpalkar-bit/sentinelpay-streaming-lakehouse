@@ -1,0 +1,21 @@
+city_id,city,district,state,region,zone,pincode,latitude,longitude,timezone,tier
+1,Mumbai,Mumbai,Maharashtra,West,West,400001,19.0760,72.8777,Asia/Kolkata,Tier-1
+2,Pune,Pune,Maharashtra,West,West,411001,18.5204,73.8567,Asia/Kolkata,Tier-1
+3,Nagpur,Nagpur,Maharashtra,West,West,440001,21.1458,79.0882,Asia/Kolkata,Tier-2
+4,Nashik,Nashik,Maharashtra,West,West,422001,19.9975,73.7898,Asia/Kolkata,Tier-2
+5,Bengaluru,Bengaluru Urban,Karnataka,South,South,560001,12.9716,77.5946,Asia/Kolkata,Tier-1
+6,Mysuru,Mysuru,Karnataka,South,South,570001,12.2958,76.6394,Asia/Kolkata,Tier-2
+7,Hyderabad,Hyderabad,Telangana,South,South,500001,17.3850,78.4867,Asia/Kolkata,Tier-1
+8,Warangal,Hanamkonda,Telangana,South,South,506002,17.9689,79.5941,Asia/Kolkata,Tier-2
+9,Chennai,Chennai,Tamil Nadu,South,South,600001,13.0827,80.2707,Asia/Kolkata,Tier-1
+10,Coimbatore,Coimbatore,Tamil Nadu,South,South,641001,11.0168,76.9558,Asia/Kolkata,Tier-2
+11,Delhi,New Delhi,Delhi,North,North,110001,28.6139,77.2090,Asia/Kolkata,Tier-1
+12,Gurugram,Gurugram,Haryana,North,North,122001,28.4595,77.0266,Asia/Kolkata,Tier-1
+13,Noida,Gautam Buddha Nagar,Uttar Pradesh,North,North,201301,28.5355,77.3910,Asia/Kolkata,Tier-1
+14,Lucknow,Lucknow,Uttar Pradesh,North,North,226001,26.8467,80.9462,Asia/Kolkata,Tier-2
+15,Jaipur,Jaipur,Rajasthan,North,North,302001,26.9124,75.7873,Asia/Kolkata,Tier-2
+16,Ahmedabad,Ahmedabad,Gujarat,West,West,380001,23.0225,72.5714,Asia/Kolkata,Tier-1
+17,Surat,Surat,Gujarat,West,West,395003,21.1702,72.8311,Asia/Kolkata,Tier-1
+18,Kolkata,Kolkata,West Bengal,East,East,700001,22.5726,88.3639,Asia/Kolkata,Tier-1
+19,Bhubaneswar,Khordha,Odisha,East,East,751001,20.2961,85.8245,Asia/Kolkata,Tier-2
+20,Guwahati,Kamrup Metro,Assam,North-East,North-East,781001,26.1445,91.7362,Asia/Kolkata,Tier-2

@@ -1,0 +1,31 @@
+bank_id,bank_code,bank_name,ifsc_prefix,swift_code,head_office,bank_type,is_active
+1,SBI,State Bank of India,SBIN,SBININBB,Mumbai,Public,TRUE
+2,HDFC,HDFC Bank,HDFC,HDFCINBB,Mumbai,Private,TRUE
+3,ICICI,ICICI Bank,ICIC,ICICINBB,Mumbai,Private,TRUE
+4,AXIS,Axis Bank,UTIB,AXISINBB,Mumbai,Private,TRUE
+5,PNB,Punjab National Bank,PUNB,PUNBINBB,New Delhi,Public,TRUE
+6,BOB,Bank of Baroda,BARB,BARBINBB,Vadodara,Public,TRUE
+7,CANARA,Canara Bank,CNRB,CNRBINBB,Bengaluru,Public,TRUE
+8,UNION,Union Bank of India,UBIN,UBININBB,Mumbai,Public,TRUE
+9,INDIAN,Indian Bank,IDIB,IDIBINBB,Chennai,Public,TRUE
+10,UCO,UCO Bank,UCBA,UCBAINBB,Kolkata,Public,TRUE
+11,CENTRAL,Central Bank of India,CBIN,CBININBB,Mumbai,Public,TRUE
+12,BANKINDIA,Bank of India,BKID,BKIDINBB,Mumbai,Public,TRUE
+13,IOB,Indian Overseas Bank,IOBA,IOBAINBB,Chennai,Public,TRUE
+14,YES,Yes Bank,YESB,YESBINBB,Mumbai,Private,TRUE
+15,IDFC,IDFC FIRST Bank,IDFB,IDFBINBB,Mumbai,Private,TRUE
+16,KOTAK,Kotak Mahindra Bank,KKBK,KKBKINBB,Mumbai,Private,TRUE
+17,INDUSIND,IndusInd Bank,INDB,INDBINBB,Mumbai,Private,TRUE
+18,FEDERAL,Federal Bank,FDRL,FDRLINBB,Aluva,Private,TRUE
+19,RBL,RBL Bank,RATN,RATNINBB,Mumbai,Private,TRUE
+20,SOUTHBANK,South Indian Bank,SIBL,SIBLINBB,Thrissur,Private,TRUE
+21,KARNATAKA,Karnataka Bank,KARB,KARBINBB,Mangaluru,Private,TRUE
+22,CITYUNION,City Union Bank,CIUB,CIUBINBB,Kumbakonam,Private,TRUE
+23,DCB,DCB Bank,DCBL,DCBLINBB,Mumbai,Private,TRUE
+24,BANDHAN,Bandhan Bank,BDBL,BDBLINBB,Kolkata,Private,TRUE
+25,AU,AU Small Finance Bank,AUBL,AUBLINBB,Jaipur,Small Finance,TRUE
+26,UJJIVAN,Ujjivan Small Finance Bank,UJVN,UJVNINBB,Bengaluru,Small Finance,TRUE
+27,EQUITAS,Equitas Small Finance Bank,ESFB,ESFBINBB,Chennai,Small Finance,TRUE
+28,FINCARE,Fincare Small Finance Bank,FSFB,FSFBINBB,Bengaluru,Small Finance,TRUE
+29,ESAF,ESAF Small Finance Bank,ESMF,ESMFINBB,Thrissur,Small Finance,TRUE
+30,JANA,Jana Small Finance Bank,JSFB,JSFBINBB,Bengaluru,Small Finance,TRUE

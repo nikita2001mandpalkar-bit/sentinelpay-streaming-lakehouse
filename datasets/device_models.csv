@@ -1,0 +1,31 @@
+device_id,device_type,brand,model,os,os_version,supports_nfc,supports_biometric,release_year
+1,Mobile,Apple,iPhone 16,iOS,iOS 18,TRUE,TRUE,2025
+2,Mobile,Apple,iPhone 16 Pro,iOS,iOS 18,TRUE,TRUE,2025
+3,Mobile,Apple,iPhone 15,iOS,iOS 17,TRUE,TRUE,2024
+4,Mobile,Samsung,Galaxy S25,Android,Android 15,TRUE,TRUE,2025
+5,Mobile,Samsung,Galaxy S24,Android,Android 14,TRUE,TRUE,2024
+6,Mobile,Google,Pixel 10,Android,Android 15,TRUE,TRUE,2025
+7,Mobile,Google,Pixel 9,Android,Android 14,TRUE,TRUE,2024
+8,Mobile,OnePlus,OnePlus 13,Android,Android 15,TRUE,TRUE,2025
+9,Mobile,OnePlus,OnePlus 12,Android,Android 14,TRUE,TRUE,2024
+10,Mobile,Xiaomi,Redmi Note 15,Android,Android 15,TRUE,TRUE,2025
+11,Mobile,Xiaomi,Redmi Note 14,Android,Android 14,TRUE,TRUE,2024
+12,Mobile,Vivo,Vivo X200,Android,Android 15,TRUE,TRUE,2025
+13,Mobile,OPPO,Find X8,Android,Android 15,TRUE,TRUE,2025
+14,Mobile,Realme,GT 7 Pro,Android,Android 15,TRUE,TRUE,2025
+15,Mobile,Nothing,Phone 3,Android,Android 15,TRUE,TRUE,2025
+16,Tablet,Apple,iPad Air,iPadOS,iPadOS 18,TRUE,TRUE,2025
+17,Tablet,Samsung,Galaxy Tab S10,Android,Android 15,TRUE,TRUE,2025
+18,Laptop,Apple,MacBook Air M4,macOS,macOS Sequoia,FALSE,TRUE,2025
+19,Laptop,Dell,XPS 15,Windows,Windows 11,FALSE,TRUE,2024
+20,Laptop,HP,Spectre x360,Windows,Windows 11,FALSE,TRUE,2024
+21,Laptop,Lenovo,ThinkPad X1 Carbon,Windows,Windows 11,FALSE,TRUE,2025
+22,Laptop,ASUS,Zenbook 14,Windows,Windows 11,FALSE,TRUE,2025
+23,Laptop,Acer,Swift Go,Windows,Windows 11,FALSE,TRUE,2025
+24,Desktop,Dell,OptiPlex 7020,Windows,Windows 11,FALSE,FALSE,2025
+25,Desktop,HP,EliteDesk 800,Windows,Windows 11,FALSE,FALSE,2025
+26,Desktop,Apple,iMac M4,macOS,macOS Sequoia,FALSE,TRUE,2025
+27,Web,Chrome,Chrome Browser,Linux,Ubuntu 24.04,FALSE,FALSE,2025
+28,Web,Firefox,Firefox Browser,Linux,Ubuntu 24.04,FALSE,FALSE,2025
+29,Web,Edge,Microsoft Edge,Windows,Windows 11,FALSE,FALSE,2025
+30,Web,Safari,Safari Browser,macOS,macOS Sequoia,FALSE,FALSE,2025

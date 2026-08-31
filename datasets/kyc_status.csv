@@ -1,0 +1,4 @@
+kyc_status_id,kyc_status,can_transact
+1,PENDING,FALSE
+2,VERIFIED,TRUE
+3,REJECTED,FALSE

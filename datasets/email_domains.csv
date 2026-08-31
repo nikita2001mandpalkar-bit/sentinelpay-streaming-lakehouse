@@ -1,0 +1,9 @@
+domain_id,domain,is_popular
+1,gmail.com,TRUE
+2,outlook.com,TRUE
+3,yahoo.com,TRUE
+4,icloud.com,TRUE
+5,proton.me,FALSE
+6,rediffmail.com,FALSE
+7,zoho.com,FALSE
+8,hotmail.com,FALSE
