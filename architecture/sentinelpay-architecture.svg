@@ -1,233 +1,246 @@
-<svg xmlns="http://www.w3.org/2000/svg" width="1800" height="1080" viewBox="0 0 1800 1080" role="img" aria-labelledby="title desc">
+<svg xmlns="http://www.w3.org/2000/svg" width="1800" height="1180" viewBox="0 0 1800 1180" role="img" aria-labelledby="title desc">
   <title id="title">SentinelPay Streaming Lakehouse Architecture</title>
-  <desc id="desc">A polished architecture diagram for the SentinelPay streaming lakehouse, showing source systems, Kafka ingestion, Bronze Silver Gold Delta layers on MinIO, quality controls, dbt analytics, Airflow orchestration, and downstream consumption.</desc>
+  <desc id="desc">Architecture diagram showing SentinelPay source systems, Kafka ingestion, Bronze Silver Gold Delta Lake layers on MinIO, Great Expectations quality controls, Apache Airflow orchestration, dbt analytics, reconciliation, and merchant SCD Type 2 outputs.</desc>
   <defs>
-    <linearGradient id="bgGrad" x1="0%" y1="0%" x2="100%" y2="100%">
-      <stop offset="0%" stop-color="#f8fbff"/>
-      <stop offset="100%" stop-color="#eef4fb"/>
+    <linearGradient id="bg" x1="0%" y1="0%" x2="100%" y2="100%">
+      <stop offset="0%" stop-color="#f7fbff"/>
+      <stop offset="100%" stop-color="#eef4ff"/>
     </linearGradient>
-    <linearGradient id="bronzeGrad" x1="0%" y1="0%" x2="100%" y2="100%">
+    <linearGradient id="bronze" x1="0%" y1="0%" x2="100%" y2="100%">
       <stop offset="0%" stop-color="#fff1e8"/>
-      <stop offset="100%" stop-color="#ffd9bf"/>
+      <stop offset="100%" stop-color="#ffd7bd"/>
     </linearGradient>
-    <linearGradient id="silverGrad" x1="0%" y1="0%" x2="100%" y2="100%">
-      <stop offset="0%" stop-color="#f9fbfd"/>
-      <stop offset="100%" stop-color="#dfe7ef"/>
+    <linearGradient id="silver" x1="0%" y1="0%" x2="100%" y2="100%">
+      <stop offset="0%" stop-color="#f8fbfd"/>
+      <stop offset="100%" stop-color="#dee7f0"/>
     </linearGradient>
-    <linearGradient id="goldGrad" x1="0%" y1="0%" x2="100%" y2="100%">
-      <stop offset="0%" stop-color="#fff9da"/>
-      <stop offset="100%" stop-color="#ffe79a"/>
+    <linearGradient id="gold" x1="0%" y1="0%" x2="100%" y2="100%">
+      <stop offset="0%" stop-color="#fff9d8"/>
+      <stop offset="100%" stop-color="#ffe38a"/>
     </linearGradient>
-    <linearGradient id="dbtGrad" x1="0%" y1="0%" x2="100%" y2="100%">
-      <stop offset="0%" stop-color="#eef5ff"/>
-      <stop offset="100%" stop-color="#dbeafe"/>
+    <linearGradient id="dbt" x1="0%" y1="0%" x2="100%" y2="100%">
+      <stop offset="0%" stop-color="#eef4ff"/>
+      <stop offset="100%" stop-color="#dbe8ff"/>
     </linearGradient>
-    <filter id="softShadow" x="-20%" y="-20%" width="140%" height="140%">
-      <feDropShadow dx="0" dy="10" stdDeviation="14" flood-color="#0f172a" flood-opacity="0.10"/>
+    <filter id="shadow" x="-20%" y="-20%" width="140%" height="140%">
+      <feDropShadow dx="0" dy="10" stdDeviation="14" flood-color="#0f172a" flood-opacity="0.12"/>
     </filter>
     <style>
-      .page { fill: url(#bgGrad); }
-      .lane { fill: rgba(255,255,255,0.72); stroke: #d7e3f1; stroke-width: 1.5; }
-      .title { font: 700 38px Arial, sans-serif; fill: #112240; }
-      .subtitle { font: 500 17px Arial, sans-serif; fill: #52637a; }
-      .pill { fill: #ffffff; stroke: #d5e3f3; stroke-width: 1.3; }
-      .pill-text { font: 700 13px Arial, sans-serif; fill: #31506f; letter-spacing: 0.5px; }
-      .section { font: 700 18px Arial, sans-serif; fill: #17324d; }
-      .card-title { font: 700 20px Arial, sans-serif; fill: #10253d; }
-      .card-text { font: 500 14px Arial, sans-serif; fill: #42556f; }
-      .card-small { font: 600 12px Arial, sans-serif; fill: #5f728a; letter-spacing: 0.5px; }
-      .source-card { fill: #ffffff; stroke: #c8d7e8; stroke-width: 1.7; }
-      .kafka-card { fill: #fff1b7; stroke: #d89a17; stroke-width: 2.2; }
-      .bronze-card { fill: url(#bronzeGrad); stroke: #c96e1a; stroke-width: 2.2; }
-      .silver-card { fill: url(#silverGrad); stroke: #64748b; stroke-width: 2.2; }
-      .gold-card { fill: url(#goldGrad); stroke: #ca8a04; stroke-width: 2.2; }
-      .quality-card { fill: #e8fff0; stroke: #1f8c5d; stroke-width: 2.2; }
-      .risk-card { fill: #fff0f0; stroke: #dc4a4a; stroke-width: 2.2; }
-      .dbt-card { fill: url(#dbtGrad); stroke: #2f6fed; stroke-width: 2.2; }
-      .analytics-card { fill: #e6fbff; stroke: #0f8b99; stroke-width: 2.2; }
-      .airflow-band { fill: #f2ebff; stroke: #8759e2; stroke-width: 2.2; }
-      .dot-source { fill: #4f7aa6; }
-      .dot-kafka { fill: #d89a17; }
-      .dot-bronze { fill: #c96e1a; }
-      .dot-silver { fill: #64748b; }
-      .dot-gold { fill: #ca8a04; }
-      .dot-quality { fill: #1f8c5d; }
-      .dot-dbt { fill: #2f6fed; }
-      .dot-airflow { fill: #8759e2; }
-      .arrow { stroke: #37506c; stroke-width: 3.2; fill: none; marker-end: url(#arrowhead); }
-      .dashed { stroke-dasharray: 10 8; stroke: #8759e2; }
+      .page { fill: url(#bg); }
+      .frame { fill: rgba(255,255,255,0.78); stroke: #d7e3f2; stroke-width: 1.5; }
+      .header { font: 700 42px 'Avenir Next', 'Segoe UI', Arial, sans-serif; fill: #10243d; }
+      .subheader { font: 500 17px 'Avenir Next', 'Segoe UI', Arial, sans-serif; fill: #53657f; }
+      .section { font: 700 20px 'Avenir Next', 'Segoe UI', Arial, sans-serif; fill: #17324d; }
+      .cardTitle { font: 700 20px 'Avenir Next', 'Segoe UI', Arial, sans-serif; fill: #10243d; }
+      .cardText { font: 500 14px 'Avenir Next', 'Segoe UI', Arial, sans-serif; fill: #42556f; }
+      .cardNote { font: 700 11px 'Avenir Next', 'Segoe UI', Arial, sans-serif; fill: #5f728a; letter-spacing: 0.8px; }
+      .badge { fill: #ffffff; stroke: #d3e0ef; stroke-width: 1.2; }
+      .badgeText { font: 700 13px 'Avenir Next', 'Segoe UI', Arial, sans-serif; fill: #2f4f70; letter-spacing: 0.4px; }
+      .source { fill: #ffffff; stroke: #c7d7e8; stroke-width: 1.7; }
+      .kafka { fill: #fff2c1; stroke: #d59416; stroke-width: 2.1; }
+      .bronze { fill: url(#bronze); stroke: #c96a20; stroke-width: 2.1; }
+      .silver { fill: url(#silver); stroke: #69788b; stroke-width: 2.1; }
+      .gold { fill: url(#gold); stroke: #c79200; stroke-width: 2.1; }
+      .quality { fill: #e9fbef; stroke: #18814d; stroke-width: 2.1; }
+      .risk { fill: #fff0f0; stroke: #d34343; stroke-width: 2.1; }
+      .dbt { fill: url(#dbt); stroke: #2c68e8; stroke-width: 2.1; }
+      .output { fill: #e8fbff; stroke: #0f8d9c; stroke-width: 2.1; }
+      .airflow { fill: #f5edff; stroke: #8b5cf6; stroke-width: 2.1; }
+      .dotSource { fill: #47719d; }
+      .dotKafka { fill: #d59416; }
+      .dotBronze { fill: #c96a20; }
+      .dotSilver { fill: #69788b; }
+      .dotGold { fill: #c79200; }
+      .dotQuality { fill: #18814d; }
+      .dotDbt { fill: #2c68e8; }
+      .dotOutput { fill: #0f8d9c; }
+      .dotAirflow { fill: #8b5cf6; }
+      .arrow { stroke: #39536f; stroke-width: 3; fill: none; marker-end: url(#arrowhead); }
+      .orchestrates { stroke: #8b5cf6; stroke-width: 3; stroke-dasharray: 10 8; fill: none; marker-end: url(#arrowheadPurple); }
     </style>
-    <marker id="arrowhead" markerWidth="12" markerHeight="12" refX="9" refY="6" orient="auto">
-      <polygon points="0 0, 12 6, 0 12" fill="#37506c"/>
+    <marker id="arrowhead" markerWidth="12" markerHeight="12" refX="10" refY="6" orient="auto">
+      <polygon points="0 0, 12 6, 0 12" fill="#39536f"/>
+    </marker>
+    <marker id="arrowheadPurple" markerWidth="12" markerHeight="12" refX="10" refY="6" orient="auto">
+      <polygon points="0 0, 12 6, 0 12" fill="#8b5cf6"/>
     </marker>
   </defs>
 
-  <rect class="page" width="1800" height="1080"/>
+  <rect class="page" width="1800" height="1180"/>
 
-  <text class="title" x="58" y="64">SentinelPay Streaming Lakehouse Architecture</text>
-  <text class="subtitle" x="58" y="96">Production-style streaming data platform for payment, refund, log, and support workflows</text>
+  <text class="header" x="56" y="68">SentinelPay Streaming Lakehouse Architecture</text>
+  <text class="subheader" x="56" y="99">Fintech data platform for payment events, refunds, settlements, quality enforcement, reconciliation, and merchant history tracking</text>
 
-  <rect class="pill" x="58" y="118" rx="18" ry="18" width="126" height="34"/>
-  <text class="pill-text" x="87" y="140">KAFKA</text>
-  <rect class="pill" x="196" y="118" rx="18" ry="18" width="134" height="34"/>
-  <text class="pill-text" x="224" y="140">PYSPARK</text>
-  <rect class="pill" x="344" y="118" rx="18" ry="18" width="162" height="34"/>
-  <text class="pill-text" x="374" y="140">DELTA LAKE</text>
-  <rect class="pill" x="520" y="118" rx="18" ry="18" width="126" height="34"/>
-  <text class="pill-text" x="546" y="140">MINIO</text>
-  <rect class="pill" x="660" y="118" rx="18" ry="18" width="136" height="34"/>
-  <text class="pill-text" x="685" y="140">AIRFLOW</text>
-  <rect class="pill" x="810" y="118" rx="18" ry="18" width="210" height="34"/>
-  <text class="pill-text" x="838" y="140">GREAT EXPECTATIONS</text>
-  <rect class="pill" x="1034" y="118" rx="18" ry="18" width="100" height="34"/>
-  <text class="pill-text" x="1067" y="140">DBT</text>
+  <rect class="badge" x="56" y="122" rx="18" ry="18" width="118" height="34"/>
+  <text class="badgeText" x="86" y="144">KAFKA</text>
+  <rect class="badge" x="186" y="122" rx="18" ry="18" width="138" height="34"/>
+  <text class="badgeText" x="213" y="144">PYSPARK</text>
+  <rect class="badge" x="338" y="122" rx="18" ry="18" width="164" height="34"/>
+  <text class="badgeText" x="367" y="144">DELTA LAKE</text>
+  <rect class="badge" x="516" y="122" rx="18" ry="18" width="118" height="34"/>
+  <text class="badgeText" x="545" y="144">MINIO</text>
+  <rect class="badge" x="648" y="122" rx="18" ry="18" width="138" height="34"/>
+  <text class="badgeText" x="674" y="144">AIRFLOW</text>
+  <rect class="badge" x="800" y="122" rx="18" ry="18" width="212" height="34"/>
+  <text class="badgeText" x="828" y="144">GREAT EXPECTATIONS</text>
+  <rect class="badge" x="1026" y="122" rx="18" ry="18" width="104" height="34"/>
+  <text class="badgeText" x="1058" y="144">DBT</text>
 
-  <rect class="lane" x="45" y="185" rx="26" ry="26" width="300" height="635" filter="url(#softShadow)"/>
-  <rect class="lane" x="375" y="185" rx="26" ry="26" width="265" height="635" filter="url(#softShadow)"/>
-  <rect class="lane" x="670" y="185" rx="26" ry="26" width="345" height="635" filter="url(#softShadow)"/>
-  <rect class="lane" x="1045" y="185" rx="26" ry="26" width="290" height="635" filter="url(#softShadow)"/>
-  <rect class="lane" x="1365" y="185" rx="26" ry="26" width="390" height="635" filter="url(#softShadow)"/>
+  <rect class="frame" x="42" y="188" rx="24" ry="24" width="320" height="760" filter="url(#shadow)"/>
+  <rect class="frame" x="388" y="188" rx="24" ry="24" width="310" height="760" filter="url(#shadow)"/>
+  <rect class="frame" x="724" y="188" rx="24" ry="24" width="356" height="760" filter="url(#shadow)"/>
+  <rect class="frame" x="1106" y="188" rx="24" ry="24" width="290" height="760" filter="url(#shadow)"/>
+  <rect class="frame" x="1422" y="188" rx="24" ry="24" width="336" height="760" filter="url(#shadow)"/>
 
-  <text class="section" x="72" y="220">1. Source Systems</text>
-  <text class="section" x="405" y="220">2. Streaming Ingestion</text>
-  <text class="section" x="697" y="220">3. Lakehouse Processing</text>
-  <text class="section" x="1072" y="220">4. Quality Controls</text>
-  <text class="section" x="1392" y="220">5. Analytics Delivery</text>
+  <text class="section" x="68" y="222">1. Source Systems</text>
+  <text class="section" x="414" y="222">2. Kafka and Bronze Ingestion</text>
+  <text class="section" x="750" y="222">3. Silver and Gold Processing</text>
+  <text class="section" x="1132" y="222">4. Quality Controls</text>
+  <text class="section" x="1448" y="222">5. Analytics Delivery</text>
 
-  <g filter="url(#softShadow)">
-    <rect class="source-card" x="72" y="250" rx="22" ry="22" width="245" height="104"/>
-    <circle class="dot-source" cx="104" cy="298" r="10"/>
-    <text class="card-title" x="124" y="289">PostgreSQL Extracts</text>
-    <text class="card-text" x="124" y="317">Reference and master inputs</text>
-    <text class="card-small" x="124" y="339">BATCH + REFERENCE</text>
+  <g filter="url(#shadow)">
+    <rect class="source" x="68" y="256" rx="20" ry="20" width="266" height="118"/>
+    <circle class="dotSource" cx="100" cy="306" r="10"/>
+    <text class="cardTitle" x="120" y="299">PostgreSQL Tables</text>
+    <text class="cardText" x="120" y="326">payments, refunds, settlements,</text>
+    <text class="cardText" x="120" y="347">merchants, devices, bank accounts</text>
+    <text class="cardNote" x="120" y="366">MASTER + TRANSACTIONAL INPUTS</text>
 
-    <rect class="source-card" x="72" y="376" rx="22" ry="22" width="245" height="104"/>
-    <circle class="dot-source" cx="104" cy="424" r="10"/>
-    <text class="card-title" x="124" y="415">JSON Payment Events</text>
-    <text class="card-text" x="124" y="443">Transactional event stream</text>
-    <text class="card-small" x="124" y="465">REAL-TIME INGESTION</text>
+    <rect class="source" x="68" y="396" rx="20" ry="20" width="266" height="102"/>
+    <circle class="dotSource" cx="100" cy="445" r="10"/>
+    <text class="cardTitle" x="120" y="439">JSON Event Feeds</text>
+    <text class="cardText" x="120" y="466">payment and refund event streams</text>
+    <text class="cardNote" x="120" y="487">REAL-TIME EVENTS</text>
 
-    <rect class="source-card" x="72" y="502" rx="22" ry="22" width="245" height="104"/>
-    <circle class="dot-source" cx="104" cy="550" r="10"/>
-    <text class="card-title" x="124" y="541">Application Logs</text>
-    <text class="card-text" x="124" y="569">Operational logging events</text>
-    <text class="card-small" x="124" y="591">OPS OBSERVABILITY DATA</text>
+    <rect class="source" x="68" y="520" rx="20" ry="20" width="266" height="102"/>
+    <circle class="dotSource" cx="100" cy="569" r="10"/>
+    <text class="cardTitle" x="120" y="563">Application Logs</text>
+    <text class="cardText" x="120" y="590">operational records and trace signals</text>
+    <text class="cardNote" x="120" y="611">OBSERVABILITY DATA</text>
 
-    <rect class="source-card" x="72" y="628" rx="22" ry="22" width="245" height="104"/>
-    <circle class="dot-source" cx="104" cy="676" r="10"/>
-    <text class="card-title" x="124" y="667">Support Tickets</text>
-    <text class="card-text" x="124" y="695">Customer issue workflow data</text>
-    <text class="card-small" x="124" y="717">SUPPORT EVENTS</text>
+    <rect class="source" x="68" y="644" rx="20" ry="20" width="266" height="102"/>
+    <circle class="dotSource" cx="100" cy="693" r="10"/>
+    <text class="cardTitle" x="120" y="687">Support Tickets</text>
+    <text class="cardText" x="120" y="714">customer issue lifecycle events</text>
+    <text class="cardNote" x="120" y="735">SERVICE WORKFLOWS</text>
   </g>
 
-  <g filter="url(#softShadow)">
-    <rect class="kafka-card" x="412" y="320" rx="28" ry="28" width="190" height="260"/>
-    <circle class="dot-kafka" cx="442" cy="368" r="11"/>
-    <text class="card-title" x="463" y="374">Apache Kafka</text>
-    <text class="card-text" x="442" y="420">Topic-based event transport</text>
-    <text class="card-text" x="442" y="454">event_payment</text>
-    <text class="card-text" x="442" y="482">event_refund</text>
-    <text class="card-text" x="442" y="510">log_support_ticket</text>
-    <text class="card-text" x="442" y="538">master/reference feeds</text>
-    <text class="card-small" x="442" y="566">HIGH-THROUGHPUT INGESTION</text>
+  <g filter="url(#shadow)">
+    <rect class="kafka" x="422" y="258" rx="24" ry="24" width="244" height="180"/>
+    <circle class="dotKafka" cx="454" cy="307" r="10"/>
+    <text class="cardTitle" x="476" y="301">Kafka Topics</text>
+    <text class="cardText" x="454" y="333">event.payment</text>
+    <text class="cardText" x="454" y="359">event.refund</text>
+    <text class="cardText" x="454" y="385">batch.settlement</text>
+    <text class="cardText" x="454" y="411">log.support_ticket</text>
+    <text class="cardText" x="454" y="437">master data feeds</text>
+
+    <rect class="bronze" x="422" y="476" rx="24" ry="24" width="244" height="250"/>
+    <circle class="dotBronze" cx="454" cy="525" r="10"/>
+    <text class="cardTitle" x="476" y="519">Bronze Delta on MinIO</text>
+    <text class="cardText" x="454" y="551">bronze_event_payment</text>
+    <text class="cardText" x="454" y="577">bronze_event_refund</text>
+    <text class="cardText" x="454" y="603">bronze_settlement</text>
+    <text class="cardText" x="454" y="629">bronze_logs</text>
+    <text class="cardText" x="454" y="655">bronze_master_data</text>
+    <text class="cardText" x="454" y="681">checkpoint folders</text>
+    <text class="cardNote" x="454" y="705">APPEND + RECOVERY-SAFE INGESTION</text>
   </g>
 
-  <g filter="url(#softShadow)">
-    <rect class="bronze-card" x="706" y="250" rx="24" ry="24" width="270" height="150"/>
-    <circle class="dot-bronze" cx="738" cy="298" r="11"/>
-    <text class="card-title" x="760" y="304">Bronze Layer</text>
-    <text class="card-text" x="738" y="338">PySpark Structured Streaming</text>
-    <text class="card-text" x="738" y="364">Raw Delta ingestion on MinIO</text>
-    <text class="card-small" x="738" y="388">RAW + APPEND-ORIENTED</text>
+  <g filter="url(#shadow)">
+    <rect class="silver" x="758" y="258" rx="24" ry="24" width="290" height="268"/>
+    <circle class="dotSilver" cx="790" cy="307" r="10"/>
+    <text class="cardTitle" x="812" y="301">Silver Curated Layer</text>
+    <text class="cardText" x="790" y="333">validated payment and refund streams</text>
+    <text class="cardText" x="790" y="359">settlements, support tickets, devices,</text>
+    <text class="cardText" x="790" y="385">and bank accounts</text>
+    <text class="cardText" x="790" y="419">deduplication and idempotent writes</text>
+    <text class="cardText" x="790" y="445">watermarking and late-event handling</text>
+    <text class="cardNote" x="790" y="470">TRUSTED OPERATIONAL DATA</text>
 
-    <rect class="silver-card" x="706" y="440" rx="24" ry="24" width="270" height="195"/>
-    <circle class="dot-silver" cx="738" cy="488" r="11"/>
-    <text class="card-title" x="760" y="494">Silver Layer</text>
-    <text class="card-text" x="738" y="528">Validation and cleansing</text>
-    <text class="card-text" x="738" y="554">Deduplication</text>
-    <text class="card-text" x="738" y="580">Watermarking and late-event handling</text>
-    <text class="card-text" x="738" y="606">Idempotent Delta writes</text>
-    <text class="card-small" x="738" y="628">CURATED + TRUSTED DATA</text>
-
-    <rect class="gold-card" x="706" y="675" rx="24" ry="24" width="270" height="145"/>
-    <circle class="dot-gold" cx="738" cy="721" r="11"/>
-    <text class="card-title" x="760" y="727">Gold Layer</text>
-    <text class="card-text" x="738" y="761">Business-ready Delta datasets</text>
-    <text class="card-text" x="738" y="787">Analytics and consumption outputs</text>
-    <text class="card-small" x="738" y="810">SERVING LAYER</text>
+    <rect class="gold" x="758" y="564" rx="24" ry="24" width="290" height="276"/>
+    <circle class="dotGold" cx="790" cy="613" r="10"/>
+    <text class="cardTitle" x="812" y="607">Gold Business Layer</text>
+    <text class="cardText" x="790" y="639">gold_payment_summary</text>
+    <text class="cardText" x="790" y="665">gold_finance_reconciliation</text>
+    <text class="cardText" x="790" y="691">gold_dim_merchant_scd</text>
+    <text class="cardText" x="790" y="725">1M+ scale execution proof</text>
+    <text class="cardText" x="790" y="751">matched, under-settled, and missing</text>
+    <text class="cardText" x="790" y="777">settlement scenarios</text>
+    <text class="cardNote" x="790" y="802">BUSINESS-READY OUTPUTS</text>
   </g>
 
-  <g filter="url(#softShadow)">
-    <rect class="quality-card" x="1083" y="285" rx="24" ry="24" width="215" height="150"/>
-    <circle class="dot-quality" cx="1115" cy="333" r="11"/>
-    <text class="card-title" x="1138" y="339">Great Expectations</text>
-    <text class="card-text" x="1115" y="373">Quality checks and validation rules</text>
-    <text class="card-text" x="1115" y="399">Airflow quality-gate execution</text>
-    <text class="card-small" x="1115" y="422">DATA CONTRACT ENFORCEMENT</text>
+  <g filter="url(#shadow)">
+    <rect class="quality" x="1140" y="258" rx="24" ry="24" width="222" height="154"/>
+    <circle class="dotQuality" cx="1172" cy="307" r="10"/>
+    <text class="cardTitle" x="1194" y="301">Great Expectations</text>
+    <text class="cardText" x="1172" y="333">Silver-layer quality gate</text>
+    <text class="cardText" x="1172" y="359">schema and business checks</text>
+    <text class="cardNote" x="1172" y="383">QUALITY ENFORCEMENT</text>
 
-    <rect class="risk-card" x="1083" y="475" rx="24" ry="24" width="215" height="125"/>
-    <circle cx="1115" cy="523" r="11" fill="#dc4a4a"/>
-    <text class="card-title" x="1138" y="529">Quarantine</text>
-    <text class="card-text" x="1115" y="563">Invalid and failed records</text>
-    <text class="card-small" x="1115" y="586">FAIL-SAFE ISOLATION</text>
+    <rect class="risk" x="1140" y="444" rx="24" ry="24" width="222" height="128"/>
+    <circle cx="1172" cy="493" r="10" fill="#d34343"/>
+    <text class="cardTitle" x="1194" y="487">Quarantine</text>
+    <text class="cardText" x="1172" y="519">invalid or rejected records</text>
+    <text class="cardNote" x="1172" y="543">FAIL-SAFE ISOLATION</text>
 
-    <rect class="quality-card" x="1083" y="640" rx="24" ry="24" width="215" height="125"/>
-    <circle class="dot-quality" cx="1115" cy="688" r="11"/>
-    <text class="card-title" x="1138" y="694">Checkpoint Recovery</text>
-    <text class="card-text" x="1115" y="728">Restart-safe streaming state</text>
-    <text class="card-small" x="1115" y="751">FAULT TOLERANCE</text>
+    <rect class="quality" x="1140" y="604" rx="24" ry="24" width="222" height="128"/>
+    <circle class="dotQuality" cx="1172" cy="653" r="10"/>
+    <text class="cardTitle" x="1194" y="647">Checkpoint Recovery</text>
+    <text class="cardText" x="1172" y="679">restart-safe stream continuity</text>
+    <text class="cardNote" x="1172" y="703">FAULT TOLERANCE</text>
   </g>
 
-  <g filter="url(#softShadow)">
-    <rect class="dbt-card" x="1400" y="272" rx="24" ry="24" width="320" height="170"/>
-    <circle class="dot-dbt" cx="1432" cy="320" r="11"/>
-    <text class="card-title" x="1454" y="326">dbt Transformation Layer</text>
-    <text class="card-text" x="1432" y="360">Staging models for curated Silver views</text>
-    <text class="card-text" x="1432" y="386">Mart models for payment, refund, support</text>
-    <text class="card-text" x="1432" y="412">Docs and lineage for downstream trust</text>
-    <text class="card-small" x="1432" y="434">ANALYTICS MODELING</text>
+  <g filter="url(#shadow)">
+    <rect class="dbt" x="1456" y="258" rx="24" ry="24" width="268" height="214"/>
+    <circle class="dotDbt" cx="1488" cy="307" r="10"/>
+    <text class="cardTitle" x="1510" y="301">dbt Analytics Layer</text>
+    <text class="cardText" x="1488" y="333">staging models over Silver data</text>
+    <text class="cardText" x="1488" y="359">marts for payment, refund,</text>
+    <text class="cardText" x="1488" y="385">support, and finance analytics</text>
+    <text class="cardText" x="1488" y="411">docs and lineage for trust</text>
+    <text class="cardNote" x="1488" y="435">CURATED ANALYTICS</text>
 
-    <rect class="analytics-card" x="1400" y="500" rx="24" ry="24" width="320" height="160"/>
-    <circle cx="1432" cy="548" r="11" fill="#0f8b99"/>
-    <text class="card-title" x="1454" y="554">Analytics and Reporting</text>
-    <text class="card-text" x="1432" y="588">Payment summary marts</text>
-    <text class="card-text" x="1432" y="614">Refund and support ticket insights</text>
-    <text class="card-text" x="1432" y="640">Documented downstream consumption</text>
-    <text class="card-small" x="1432" y="662">BUSINESS CONSUMPTION</text>
+    <rect class="output" x="1456" y="512" rx="24" ry="24" width="268" height="176"/>
+    <circle class="dotOutput" cx="1488" cy="561" r="10"/>
+    <text class="cardTitle" x="1510" y="555">Consumers and Proof</text>
+    <text class="cardText" x="1488" y="587">analysts and downstream reports</text>
+    <text class="cardText" x="1488" y="613">GitHub screenshots and demos</text>
+    <text class="cardText" x="1488" y="639">recruiter-ready project evidence</text>
+    <text class="cardNote" x="1488" y="662">DELIVERY + SHOWCASE</text>
   </g>
 
-  <g filter="url(#softShadow)">
-    <rect class="airflow-band" x="255" y="890" rx="28" ry="28" width="1290" height="120"/>
-    <circle class="dot-airflow" cx="300" cy="948" r="12"/>
-    <text class="card-title" x="326" y="955">Apache Airflow Orchestration</text>
-    <text class="card-text" x="510" y="955">Streaming Control DAG</text>
-    <text class="card-text" x="712" y="955">Quality Gate DAG</text>
-    <text class="card-text" x="884" y="955">Gold Pipeline DAG</text>
-    <text class="card-text" x="1062" y="955">dbt Pipeline DAG</text>
-    <text class="card-text" x="1228" y="955">Main Pipeline DAG</text>
+  <g filter="url(#shadow)">
+    <rect class="airflow" x="244" y="996" rx="28" ry="28" width="1312" height="116"/>
+    <circle class="dotAirflow" cx="288" cy="1053" r="11"/>
+    <text class="cardTitle" x="312" y="1048">Apache Airflow Orchestration</text>
+    <text class="cardText" x="540" y="1048">Streaming Control DAG</text>
+    <text class="cardText" x="752" y="1048">Quality Gate DAG</text>
+    <text class="cardText" x="936" y="1048">Gold Pipeline DAG</text>
+    <text class="cardText" x="1110" y="1048">dbt Pipeline DAG</text>
+    <text class="cardText" x="1268" y="1048">Main Pipeline</text>
   </g>
 
-  <path class="arrow" d="M317 302 C358 302, 372 362, 412 362"/>
-  <path class="arrow" d="M317 428 C356 428, 370 410, 412 410"/>
-  <path class="arrow" d="M317 554 C356 554, 370 458, 412 458"/>
-  <path class="arrow" d="M317 680 C356 680, 370 506, 412 506"/>
+  <path class="arrow" d="M334 315 C370 315, 386 315, 422 315"/>
+  <path class="arrow" d="M334 447 C370 447, 386 385, 422 385"/>
+  <path class="arrow" d="M334 571 C370 571, 386 455, 422 455"/>
+  <path class="arrow" d="M334 695 C370 695, 386 525, 422 525"/>
 
-  <path class="arrow" d="M602 450 C646 450, 662 325, 706 325"/>
-  <path class="arrow" d="M841 400 L841 440"/>
-  <path class="arrow" d="M841 635 L841 675"/>
+  <path class="arrow" d="M544 438 L544 476"/>
+  <path class="arrow" d="M666 600 L758 600"/>
+  <path class="arrow" d="M903 526 L903 564"/>
 
-  <path class="arrow" d="M976 538 C1020 538, 1036 360, 1083 360"/>
-  <path class="arrow" d="M1190 435 L1190 475"/>
-  <path class="arrow" d="M976 320 C1020 320, 1036 700, 1083 700"/>
+  <path class="arrow" d="M1048 392 L1100 392 L1100 334 L1140 334"/>
+  <path class="arrow" d="M1251 412 L1251 430 L1300 430 L1300 444"/>
+  <path class="arrow" d="M1048 716 L1110 716 L1110 620 L1140 620"/>
 
-  <path class="arrow" d="M976 538 C1180 538, 1225 357, 1400 357"/>
-  <path class="arrow" d="M976 748 C1165 748, 1235 580, 1400 580"/>
+  <path class="arrow" d="M1362 334 L1456 334"/>
+  <path class="arrow" d="M1362 620 L1456 620"/>
 
-  <path class="arrow dashed" d="M560 890 C560 805, 706 805, 706 748"/>
-  <path class="arrow dashed" d="M760 890 C760 805, 1083 805, 1083 700"/>
-  <path class="arrow dashed" d="M950 890 C950 820, 976 820, 976 748"/>
-  <path class="arrow dashed" d="M1148 890 C1148 800, 1400 800, 1400 357"/>
-  <path class="arrow dashed" d="M1340 890 C1340 770, 412 770, 412 515"/>
+  <path class="orchestrates" d="M540 996 L540 726"/>
+  <path class="orchestrates" d="M903 996 L903 840"/>
+  <path class="orchestrates" d="M1251 996 L1251 732"/>
+  <path class="orchestrates" d="M1590 996 L1590 584"/>
 
-  <text class="subtitle" x="1390" y="790">Active public demo flow: payments, refunds, support-ticket analytics</text>
+  <path class="arrow" d="M1300 572 L1300 588 L1300 604"/>
 </svg>
