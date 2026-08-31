@@ -1,68 +1,138 @@
 flowchart LR
-    A1[PostgreSQL Extracts]
-    A2[JSON Payment Events]
-    A3[Application Logs]
-    A4[Support Tickets]
+    subgraph S["Source Systems"]
+        PG[PostgreSQL<br/>payments, refunds, settlements,<br/>merchants, devices, bank accounts]
+        EV[JSON Event Streams<br/>payment and refund events]
+        LG[Application Logs]
+        ST[Support Tickets]
+    end
 
-    B[Apache Kafka]
+    subgraph K["Kafka Ingestion Layer"]
+        KP[event.payment]
+        KR[event.refund]
+        KS[batch.settlement]
+        KL[log.support_ticket]
+        KM[master data feeds]
+    end
 
-    C1[Bronze Layer<br/>PySpark Structured Streaming<br/>Raw Delta Tables on MinIO]
-    C2[Silver Layer<br/>Validation<br/>Deduplication<br/>Watermarking<br/>Late Event Handling]
-    C3[Gold Layer<br/>Curated Delta Tables on MinIO]
+    subgraph B["Bronze Delta Layer on MinIO"]
+        BP[bronze_event_payment]
+        BR[bronze_event_refund]
+        BS[bronze_settlement]
+        BL[bronze_logs]
+        BM[bronze_master_data]
+        BC[checkpoints]
+    end
 
-    D1[Great Expectations<br/>Quality Validation]
-    D2[Quarantine Records]
-    D3[Checkpoint Recovery]
+    subgraph V["Silver Curated Layer"]
+        SP[silver_event_payment]
+        SR[silver_event_refund]
+        SS[silver_settlements]
+        STK[silver_support_ticket]
+        SD[silver_devices]
+        SBA[silver_bank_accounts]
+    end
 
-    E1[dbt Staging Models]
-    E2[dbt Mart Models]
-    E3[dbt Docs and Lineage]
+    subgraph Q["Quality and Control"]
+        GX[Great Expectations<br/>quality gate]
+        QQ[quarantine tables]
+        FT[restart-safe checkpoint recovery]
+    end
 
-    F[Analytics and Reporting]
+    subgraph G["Gold Business Layer"]
+        GPS[gold_payment_summary]
+        GRC[gold_finance_reconciliation]
+        GSCD[gold_dim_merchant_scd]
+    end
 
-    G[Apache Airflow<br/>Streaming Control<br/>Quality Gate<br/>Gold Pipeline<br/>dbt Pipeline<br/>Main Pipeline]
+    subgraph D["dbt Analytics Layer"]
+        DSG[staging models]
+        DMT[marts]
+        DDOC[docs and lineage]
+    end
 
-    A1 --> B
-    A2 --> B
-    A3 --> B
-    A4 --> B
+    AIR[Apache Airflow<br/>streaming control, quality gate,<br/>gold pipeline, dbt pipeline]
+    OUT[Analysts, dashboards,<br/>recruiter proof, and downstream consumers]
 
-    B --> C1
-    C1 --> C2
-    C2 --> C3
+    PG --> KP
+    PG --> KR
+    PG --> KS
+    PG --> KM
+    EV --> KP
+    EV --> KR
+    LG --> KL
+    ST --> KL
 
-    C2 --> D1
-    D1 --> D2
-    C1 --> D3
+    KP --> BP
+    KR --> BR
+    KS --> BS
+    KL --> BL
+    KM --> BM
 
-    C2 --> E1
-    E1 --> E2
-    E2 --> E3
-    E2 --> F
+    BP --> SP
+    BR --> SR
+    BS --> SS
+    BL --> STK
+    BM --> SD
+    BM --> SBA
 
-    G -.-> C1
-    G -.-> D1
-    G -.-> C3
-    G -.-> E1
+    BP --> FT
+    BR --> FT
+    BS --> FT
 
-    classDef source fill:#ffffff,stroke:#c8d7e8,stroke-width:1.5px,color:#17324d;
-    classDef ingest fill:#fff1b7,stroke:#d89a17,stroke-width:2px,color:#17324d;
-    classDef bronze fill:#ffe5d0,stroke:#c96e1a,stroke-width:2px,color:#17324d;
-    classDef silver fill:#eef3f8,stroke:#64748b,stroke-width:2px,color:#17324d;
-    classDef gold fill:#fff2bf,stroke:#ca8a04,stroke-width:2px,color:#17324d;
-    classDef quality fill:#e8fff0,stroke:#1f8c5d,stroke-width:2px,color:#17324d;
-    classDef risk fill:#fff0f0,stroke:#dc4a4a,stroke-width:2px,color:#17324d;
-    classDef dbt fill:#e8f1ff,stroke:#2f6fed,stroke-width:2px,color:#17324d;
-    classDef orchestration fill:#f2ebff,stroke:#8759e2,stroke-width:2px,color:#17324d;
-    classDef output fill:#e6fbff,stroke:#0f8b99,stroke-width:2px,color:#17324d;
+    SP --> GX
+    SR --> GX
+    SS --> GX
+    STK --> GX
+    SD --> GX
+    SBA --> GX
+    GX --> QQ
 
-    class A1,A2,A3,A4 source;
-    class B ingest;
-    class C1 bronze;
-    class C2 silver;
-    class C3 gold;
-    class D1,D3 quality;
-    class D2 risk;
-    class E1,E2,E3 dbt;
-    class G orchestration;
-    class F output;
+    SP --> GPS
+    SR --> GPS
+    SS --> GRC
+    SP --> GRC
+    SR --> GRC
+    BM --> GSCD
+
+    SP --> DSG
+    SR --> DSG
+    SS --> DSG
+    STK --> DSG
+    DSG --> DMT
+    DMT --> DDOC
+
+    GPS --> OUT
+    GRC --> OUT
+    GSCD --> OUT
+    DMT --> OUT
+    DDOC --> OUT
+
+    AIR -. orchestrates .-> BP
+    AIR -. orchestrates .-> BR
+    AIR -. orchestrates .-> BS
+    AIR -. orchestrates .-> GX
+    AIR -. orchestrates .-> GRC
+    AIR -. orchestrates .-> GSCD
+    AIR -. orchestrates .-> DSG
+
+    classDef source fill:#f8fbff,stroke:#1f4b7a,stroke-width:1.5px,color:#0f2942;
+    classDef kafka fill:#fff3c8,stroke:#c98500,stroke-width:2px,color:#3f2f00;
+    classDef bronze fill:#ffe6d5,stroke:#c8641d,stroke-width:2px,color:#49240a;
+    classDef silver fill:#eef3f8,stroke:#6b7a8c,stroke-width:2px,color:#233244;
+    classDef quality fill:#e9fbef,stroke:#16824b,stroke-width:2px,color:#123927;
+    classDef quarantine fill:#fff1f1,stroke:#c93d3d,stroke-width:2px,color:#4e1515;
+    classDef gold fill:#fff3b0,stroke:#c79a00,stroke-width:2px,color:#4b3800;
+    classDef dbt fill:#e8f0ff,stroke:#2a67e8,stroke-width:2px,color:#183466;
+    classDef orchestration fill:#f5ecff,stroke:#8b5cf6,stroke-width:2px,color:#3e2468;
+    classDef output fill:#e7fbff,stroke:#0e8a96,stroke-width:2px,color:#11373b;
+
+    class PG,EV,LG,ST source;
+    class KP,KR,KS,KL,KM kafka;
+    class BP,BR,BS,BL,BM,BC bronze;
+    class SP,SR,SS,STK,SD,SBA silver;
+    class GX,FT quality;
+    class QQ quarantine;
+    class GPS,GRC,GSCD gold;
+    class DSG,DMT,DDOC dbt;
+    class AIR orchestration;
+    class OUT output;
